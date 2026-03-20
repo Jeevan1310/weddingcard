@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bibin & Athira — Wedding Invitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Great+Vibes&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5e9c8;
+    --ivory: #fdf8ef;
+    --cream: #f7f0e0;
+    --deep: #2c1f0e;
+    --brown: #5a3e28;
+    --text: #3d2b1a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ivory);
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--deep);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.hide { opacity: 0; visibility: hidden; }
+  .loader-ring {
+    width: 70px; height: 70px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1.2s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PETALS CANVAS ── */
+  #petals-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      var(--ivory);
+    padding: 60px 20px;
+    z-index: 2;
+  }
+
+  /* Corner ornaments */
+  .corner { position: absolute; width: 160px; height: 160px; }
+  .corner svg { width: 100%; height: 100%; }
+  .corner--tl { top: 20px; left: 20px; }
+  .corner--tr { top: 20px; right: 20px; transform: scaleX(-1); }
+  .corner--bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+  .corner--br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+  .hero-inner {
+    text-align: center;
+    max-width: 680px;
+    position: relative; z-index: 3;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.6s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .divider-ornament {
+    display: flex; align-items: center; gap: 14px;
+    justify-content: center;
+    margin: 16px 0;
+    color: var(--gold);
+  }
+  .divider-ornament span { font-size: 1.2rem; }
+  .divider-line {
+    height: 1px; width: 60px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  }
+
+  .names-wrap {
+    position: relative;
+    margin: 10px 0;
+  }
+  .name-main {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(4rem, 12vw, 7.5rem);
+    color: var(--brown);
+    line-height: 1;
+    display: block;
+    text-shadow: 2px 4px 12px rgba(90,62,40,0.15);
+  }
+  .name-main.bride { color: var(--gold); }
+
+  .ampersand {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--gold-light);
+    display: block;
+    margin: -10px 0;
+    letter-spacing: 0.1em;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--brown);
+    letter-spacing: 0.08em;
+    margin-top: 18px;
+    opacity: 0.85;
+  }
+
+  .date-badge {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 42px;
+    border: 1px solid var(--gold);
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,168,76,0.12));
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brown);
+    position: relative;
+  }
+  .date-badge::before, .date-badge::after {
+    content: '✦';
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 0.6rem;
+  }
+  .date-badge::before { left: 14px; }
+  .date-badge::after  { right: 14px; }
+
+  .scroll-hint {
+    margin-top: 50px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--gold);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: bounce 2s ease infinite;
+  }
+  .scroll-hint svg { width: 18px; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative; z-index: 2;
+    padding: 90px 20px;
+  }
+
+  .section-inner {
+    max-width: 720px; margin: 0 auto;
+    text-align: center;
+  }
+
+  .section-tag {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: var(--brown);
+    font-weight: 300;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .section-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    line-height: 2;
+    color: var(--text);
+    opacity: 0.85;
+    font-weight: 400;
+  }
+
+  /* ── GOLD RULE ── */
+  .gold-rule {
+    display: flex; align-items: center; gap: 16px;
+    justify-content: center; margin: 50px auto;
+    max-width: 400px;
+  }
+  .gold-rule-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .gold-rule-diamond {
+    color: var(--gold); font-size: 0.7rem;
+  }
+
+  /* ── COUPLE SECTION ── */
+  .couple-section { background: var(--cream); }
+
+  .couple-cards {
+    display: flex; gap: 40px; justify-content: center;
+    flex-wrap: wrap; margin-top: 40px;
+  }
+
+  .person-card {
+    flex: 1; min-width: 240px; max-width: 300px;
+    padding: 40px 30px;
+    border: 1px solid rgba(201,168,76,0.35);
+    background: var(--ivory);
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .person-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(90,62,40,0.12);
+  }
+  .person-card::before {
+    content: '';
+    position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1px solid rgba(201,168,76,0.15);
+    pointer-events: none;
+  }
+
+  .person-initial {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-pale), var(--cream));
+    border: 1px solid var(--gold-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.4rem;
+    color: var(--gold);
+  }
+
+  .person-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--brown);
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+
+  .person-sub {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 300;
+  }
+
+  /* ── EVENT DETAILS ── */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; margin-top: 40px;
+  }
+
+  .event-card {
+    padding: 36px 28px;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: linear-gradient(160deg, var(--ivory) 0%, var(--cream) 100%);
+    position: relative; overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  .event-card:hover { transform: translateY(-4px); }
+
+  .event-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .event-icon {
+    font-size: 1.8rem; margin-bottom: 14px; display: block;
+  }
+
+  .event-title {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    font-weight: 300;
+  }
+
+  .event-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--brown);
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+
+  .event-detail {
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: var(--text);
+    opacity: 0.75;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown-section {
+    background: var(--deep);
+    color: var(--ivory);
+  }
+  .countdown-section .section-tag { color: var(--gold-light); }
+  .countdown-section .section-heading { color: var(--gold-pale); }
+
+  .countdown-row {
+    display: flex; gap: 10px; justify-content: center;
+    flex-wrap: wrap; margin-top: 40px;
+  }
+
+  .count-block {
+    min-width: 90px; padding: 24px 16px;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(255,255,255,0.04);
+    text-align: center;
+  }
+
+  .count-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+    display: block;
+  }
+
+  .count-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-top: 8px;
+    display: block;
+    font-weight: 300;
+  }
+
+
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep);
+    padding: 50px 20px;
+    text-align: center;
+    position: relative; z-index: 2;
+  }
+  .footer-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.8rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .footer-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.5);
+    margin-top: 12px;
+    font-weight: 200;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in-view { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 560px) {
+    .corner { width: 90px; height: 90px; }
+    .couple-cards { flex-direction: column; align-items: center; }
+    .person-card { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader"><div class="loader-ring"></div></div>
+
+<!-- PETALS -->
+<canvas id="petals-canvas"></canvas>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+
+  <!-- Corners -->
+  <div class="corner corner--tl">
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 150 L10 10 L150 10" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M30 150 L30 30 L150 30" stroke="#c9a84c" stroke-width="0.4" fill="none" opacity="0.3"/>
+      <circle cx="10" cy="10" r="3" fill="#c9a84c" opacity="0.7"/>
+      <path d="M10 10 Q80 10 80 80" stroke="#c9a84c" stroke-width="0.5" fill="none" opacity="0.2"/>
+      <path d="M55 10 L10 55" stroke="#c9a84c" stroke-width="0.4" fill="none" opacity="0.25"/>
+      <path d="M100 10 L10 100" stroke="#c9a84c" stroke-width="0.3" fill="none" opacity="0.15"/>
+      <path d="M10 10 L40 10 Q10 40 10 40" stroke="#c9a84c" stroke-width="0.8" fill="none" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner--tr">
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 150 L10 10 L150 10" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M30 150 L30 30 L150 30" stroke="#c9a84c" stroke-width="0.4" fill="none" opacity="0.3"/>
+      <circle cx="10" cy="10" r="3" fill="#c9a84c" opacity="0.7"/>
+    </svg>
+  </div>
+  <div class="corner corner--bl">
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 150 L10 10 L150 10" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M30 150 L30 30 L150 30" stroke="#c9a84c" stroke-width="0.4" fill="none" opacity="0.3"/>
+      <circle cx="10" cy="10" r="3" fill="#c9a84c" opacity="0.7"/>
+    </svg>
+  </div>
+  <div class="corner corner--br">
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 150 L10 10 L150 10" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M30 150 L30 30 L150 30" stroke="#c9a84c" stroke-width="0.4" fill="none" opacity="0.3"/>
+      <circle cx="10" cy="10" r="3" fill="#c9a84c" opacity="0.7"/>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <span class="tag">Together with their families</span>
+
+    <div class="divider-ornament">
+      <div class="divider-line"></div>
+      <span>✦</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="names-wrap">
+      <span class="name-main">Bibin Thomas</span>
+      <span class="ampersand">& </span>
+      <span class="name-main bride">Athira Hari</span>
+    </div>
+
+    <div class="divider-ornament" style="margin-top: 18px;">
+      <div class="divider-line"></div>
+      <span>✦</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <p class="subtitle">joyfully invite you to celebrate their wedding</p>
+
+    <div class="date-badge">April 28, 2025 &nbsp;·&nbsp; Kerala, India</div>
+
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 3 v14 M4 11 l6 6 6-6"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COUPLE ═══ -->
+<section class="couple-section">
+  <div class="section-inner">
+    <span class="section-tag reveal">The Couple</span>
+    <h2 class="section-heading reveal">Two souls, one destiny</h2>
+    <p class="section-text reveal">
+      With hearts full of love and gratitude, Bibin and Athira are embarking on a beautiful journey together. They invite you — their cherished family and friends — to witness and bless this sacred union.
+    </p>
+
+    <div class="couple-cards">
+      <div class="person-card reveal reveal-delay-1">
+        <div class="person-initial">B</div>
+        <div class="person-name">Bibin Thomas</div>
+        <div class="person-sub">Son of Thomas & Family</div>
+      </div>
+      <div class="person-card reveal reveal-delay-2">
+        <div class="person-initial">A</div>
+        <div class="person-name">Athira Hari</div>
+        <div class="person-sub">Daughter of Hari & Family</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-rule reveal" style="position:relative;z-index:2;">
+  <div class="gold-rule-line"></div>
+  <div class="gold-rule-diamond">❖</div>
+  <div class="gold-rule-diamond">✦</div>
+  <div class="gold-rule-diamond">❖</div>
+  <div class="gold-rule-line"></div>
+</div>
+
+<!-- ═══ EVENTS ═══ -->
+<section>
+  <div class="section-inner">
+    <span class="section-tag reveal">The Celebration</span>
+    <h2 class="section-heading reveal">Wedding Reception</h2>
+    <p class="section-text reveal">
+      We joyfully invite you to join us as we celebrate the union of Bibin and Athira. Your presence and blessings would make this evening truly memorable.
+    </p>
+
+    <div style="display:flex; justify-content:center; margin-top:40px;">
+      <div class="event-card reveal" style="max-width:420px; width:100%; padding: 52px 44px;">
+        <span class="event-icon">💍</span>
+        <div class="event-title">You Are Cordially Invited To</div>
+        <div class="event-name" style="font-size:2rem;">Wedding Reception</div>
+        <div style="height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:20px 0;"></div>
+        <div class="event-detail" style="font-size:0.9rem; line-height:2.2;">
+          <strong style="color:var(--brown); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem;">Date &amp; Time</strong><br>
+          Monday, April 28, 2025<br>
+          6:00 PM – 10:00 PM<br><br>
+          <strong style="color:var(--brown); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem;">Venue</strong><br>
+          The Grand Ballroom<br>
+          Le Meridien, Kochi<br>
+          Kerala, India
+        </div>
+        <div style="margin-top:24px; padding:12px 20px; border:1px solid rgba(201,168,76,0.3); background:rgba(201,168,76,0.05);">
+          <span style="font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:300;">Dress Code — Formal Attire</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COUNTDOWN ═══ -->
+<section class="countdown-section">
+  <div class="section-inner">
+    <span class="section-tag reveal">Counting Down</span>
+    <h2 class="section-heading reveal">Until We Say "I Do"</h2>
+
+    <div class="countdown-row">
+      <div class="count-block reveal reveal-delay-1">
+        <span class="count-number" id="cd-days">--</span>
+        <span class="count-label">Days</span>
+      </div>
+      <div class="count-block reveal reveal-delay-2">
+        <span class="count-number" id="cd-hours">--</span>
+        <span class="count-label">Hours</span>
+      </div>
+      <div class="count-block reveal reveal-delay-3">
+        <span class="count-number" id="cd-mins">--</span>
+        <span class="count-label">Minutes</span>
+      </div>
+      <div class="count-block reveal">
+        <span class="count-number" id="cd-secs">--</span>
+        <span class="count-label">Seconds</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MESSAGE ═══ -->
+<section style="background:var(--cream);">
+  <div class="section-inner">
+    <span class="section-tag reveal">A Note From Us</span>
+    <h2 class="section-heading reveal">With Love & Gratitude</h2>
+    <p class="section-text reveal" style="font-style:italic; font-size:1.2rem; line-height: 2.2; max-width:580px; margin:0 auto;">
+      "Two hearts, one promise. We are beyond grateful to have you in our lives and would be honoured to have your blessings and presence as we begin this beautiful chapter together. Your love and support mean the world to us."
+    </p>
+    <div class="divider-ornament" style="margin-top:28px;">
+      <div class="divider-line"></div>
+      <span style="font-family:'Great Vibes',cursive; font-size:1.8rem; color:var(--gold); line-height:1;">Bibin & Athira</span>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-names">Bibin & Athira</div>
+  <p class="footer-sub">April 28, 2025 &nbsp;✦&nbsp; Kerala, India &nbsp;✦&nbsp; #BibinWeddsAthira</p>
+</footer>
+
+<script>
+// ── LOADER ──
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('hide'), 800);
+});
+
+// ── PETALS ──
+(function() {
+  const canvas = document.getElementById('petals-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, petals = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['#f5c6c6','#f7dce0','#e8c97a','#f9edd2','#f2b8b8'];
+
+  class Petal {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : -20;
+      this.r = 4 + Math.random() * 7;
+      this.speed = 0.4 + Math.random() * 0.7;
+      this.drift = (Math.random() - 0.5) * 0.5;
+      this.rot   = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.03;
+      this.opacity = 0.3 + Math.random() * 0.45;
+      this.color   = COLORS[Math.floor(Math.random() * COLORS.length)];
+    }
+    update() {
+      this.y   += this.speed;
+      this.x   += this.drift;
+      this.rot += this.rotSpeed;
+      if (this.y > H + 20) this.reset(false);
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.opacity;
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.r, this.r * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 55; i++) petals.push(new Petal());
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    petals.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2025-04-28T09:00:00');
+  const now    = new Date();
+  let diff     = Math.max(0, target - now);
+
+  const days  = Math.floor(diff / 86400000); diff %= 86400000;
+  const hours = Math.floor(diff / 3600000);  diff %= 3600000;
+  const mins  = Math.floor(diff / 60000);    diff %= 60000;
+  const secs  = Math.floor(diff / 1000);
+
+  document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
