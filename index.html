@@ -4,29 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bibin & Athira — Wedding Invitation</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Pinyon+Script&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Pinyon+Script&family=Raleway:wght@200;300;400&family=Sacramento&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    /* ── Powder Blue Palette ── */
-    --sky:         #ddeef8;   /* hero bg */
-    --sky-mid:     #cce4f4;   /* section alt */
-    --sky-deep:    #b8d6ee;   /* deeper panels */
-    --sky-card:    #e8f4fc;   /* card bg */
-    --sky-card2:   #f0f8ff;   /* lightest card */
-    --blue:        #5a9bbf;   /* primary accent */
-    --blue-mid:    #4a8aae;   /* mid accent */
-    --blue-deep:   #2e6a8a;   /* deep accent */
-    --blue-soft:   #7db5d0;   /* soft accent */
-    --silver:      #8aafc0;   /* muted blue-grey */
-    --border:      rgba(74,138,174,0.2);
-    --border-hi:   rgba(74,138,174,0.45);
-    --text:        #1a3a4a;   /* deep navy text */
-    --text-mid:    #2c5068;   /* mid text */
-    --text-soft:   #3d6a84;   /* soft text */
-    --text-dim:    #6a92a8;   /* muted text */
-    --white:       #ffffff;
+    --sky:        #ddeef8;
+    --sky-mid:    #cce4f4;
+    --sky-deep:   #b8d6ee;
+    --sky-card:   #e8f4fc;
+    --sky-card2:  #f0f8ff;
+    --blue:       #5a9bbf;
+    --blue-mid:   #4a8aae;
+    --blue-deep:  #2e6a8a;
+    --blue-soft:  #7db5d0;
+    --silver:     #8aafc0;
+    --border:     rgba(74,138,174,0.2);
+    --border-hi:  rgba(74,138,174,0.45);
+    --text:       #1a3a4a;
+    --text-mid:   #2c5068;
+    --text-soft:  #3d6a84;
+    --text-dim:   #6a92a8;
   }
 
   html { scroll-behavior: smooth; }
@@ -50,11 +48,11 @@
     transition: opacity 1s ease, visibility 1s ease;
   }
   #loader.hide { opacity: 0; visibility: hidden; }
-  .loader-inner { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .loader-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
   .loader-ring {
-    width: 62px; height: 62px;
+    width: 60px; height: 60px;
     border: 1.5px solid rgba(74,138,174,0.25);
-    border-top-color: var(--blue);
+    border-top-color: var(--blue-deep);
     border-radius: 50%;
     animation: spin 1.3s linear infinite;
   }
@@ -66,11 +64,28 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ══════════════════════════
-     PETALS CANVAS
+     FLOATING PETALS CANVAS
   ══════════════════════════ */
   #petals-canvas {
     position: fixed; inset: 0;
     pointer-events: none; z-index: 1;
+  }
+
+  /* ══════════════════════════
+     FLOATING FLOWERS (SVG)
+  ══════════════════════════ */
+  .float-flower {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: floatDown linear infinite;
+  }
+  @keyframes floatDown {
+    0%   { transform: translateY(-60px) rotate(0deg);   opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
   }
 
   /* ══════════════════════════
@@ -82,19 +97,34 @@
     align-items: center; justify-content: center;
     position: relative; overflow: hidden;
     background:
-      radial-gradient(ellipse at 15% 25%, rgba(255,255,255,0.55) 0%, transparent 50%),
+      radial-gradient(ellipse at 15% 25%, rgba(255,255,255,0.6) 0%, transparent 50%),
       radial-gradient(ellipse at 85% 75%, rgba(90,155,191,0.15) 0%, transparent 50%),
-      linear-gradient(175deg, #e8f4fc 0%, #cce4f4 45%, #b8d6ee 100%);
+      linear-gradient(175deg, #eaf5fd 0%, #cce4f4 45%, #b8d6ee 100%);
     padding: 80px 24px; z-index: 2;
   }
 
-  /* Subtle dot texture */
+  /* Dot texture */
   .hero::before {
     content: '';
     position: absolute; inset: 0;
-    background-image: radial-gradient(circle, rgba(74,138,174,0.08) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(74,138,174,0.07) 1px, transparent 1px);
     background-size: 28px 28px;
     pointer-events: none; z-index: 0;
+  }
+
+  /* ── Animated ring decoration ── */
+  .hero-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(74,138,174,0.15);
+    pointer-events: none; z-index: 1;
+    animation: ringPulse 6s ease-in-out infinite;
+  }
+  .hero-ring:nth-child(1) { width: 500px; height: 500px; animation-delay: 0s; }
+  .hero-ring:nth-child(2) { width: 680px; height: 680px; animation-delay: 1.5s; }
+  .hero-ring:nth-child(3) { width: 860px; height: 860px; animation-delay: 3s; }
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1);    opacity: 0.4; }
+    50%       { transform: scale(1.03); opacity: 0.18; }
   }
 
   /* ── Corner ornaments ── */
@@ -136,7 +166,9 @@
   }
   .div-star { color: var(--blue-mid); font-size: 0.9rem; }
 
-  /* ── Names ── */
+  /* ══════════════════════════
+     NAMES — consistent weight
+  ══════════════════════════ */
   .names-wrap { margin: 8px 0; }
   .name-main {
     font-family: 'Pinyon Script', cursive;
@@ -144,15 +176,14 @@
     line-height: 1.1; display: block;
     letter-spacing: 0.02em;
     white-space: nowrap;
-  }
-  .name-groom {
+    /* SAME colour & shadow for both names → consistent visual weight */
     color: var(--blue-deep);
-    text-shadow: 1px 3px 14px rgba(46,106,138,0.2), 0 1px 4px rgba(0,0,0,0.06);
+    text-shadow: 1px 3px 14px rgba(46,106,138,0.22), 0 1px 4px rgba(0,0,0,0.07);
   }
-  .name-bride {
-    color: var(--blue-mid);
-    text-shadow: 1px 3px 14px rgba(74,138,174,0.18), 0 1px 4px rgba(0,0,0,0.06);
-  }
+  /* Subtle hue shift only — same perceived boldness */
+  .name-groom { color: var(--blue-deep); }
+  .name-bride  { color: #2a6080; }   /* same lightness as blue-deep, slightly cooler */
+
   .ampersand {
     font-family: 'Playfair Display', serif;
     font-style: italic; font-weight: 400;
@@ -168,22 +199,50 @@
     color: var(--text-soft); letter-spacing: 0.1em; margin-top: 22px;
   }
 
-  /* ── Date badge ── */
+  /* ── Date badge — elegant redesign ── */
   .date-badge {
-    display: inline-block; margin-top: 30px; padding: 14px 50px;
+    display: inline-block; margin-top: 30px; padding: 20px 60px 18px;
     border: 1px solid var(--border-hi);
-    background: rgba(255,255,255,0.5);
-    font-family: 'Raleway', sans-serif; font-weight: 300;
-    font-size: 0.7rem; letter-spacing: 0.36em;
-    text-transform: uppercase; color: var(--text-mid); position: relative;
+    background: rgba(255,255,255,0.45);
+    position: relative;
     backdrop-filter: blur(4px);
   }
   .date-badge::before, .date-badge::after {
-    content: '✦'; position: absolute; top: 50%; transform: translateY(-50%);
-    color: var(--blue-soft); font-size: 0.5rem;
+    content: ''; position: absolute;
+    left: 12px; right: 12px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
   }
-  .date-badge::before { left: 16px; }
-  .date-badge::after  { right: 16px; }
+  .date-badge::before { top: 6px; }
+  .date-badge::after  { bottom: 6px; }
+  .date-day {
+    font-family: 'Sacramento', cursive;
+    font-size: 2rem; color: var(--blue-deep);
+    display: block; line-height: 1.1;
+    letter-spacing: 0.04em;
+  }
+  .date-line {
+    display: flex; align-items: center; gap: 10px;
+    justify-content: center; margin-top: 2px;
+  }
+  .date-num {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.6rem; font-weight: 400;
+    color: var(--blue-deep); line-height: 1;
+    letter-spacing: 0.04em;
+  }
+  .date-sep { color: var(--blue-soft); font-size: 0.7rem; }
+  .date-month {
+    font-family: 'Raleway', sans-serif; font-weight: 200;
+    font-size: 0.65rem; letter-spacing: 0.38em;
+    text-transform: uppercase; color: var(--text-soft);
+    display: block; margin-top: 4px;
+  }
+  .date-place {
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-dim);
+    display: block; margin-top: 5px;
+  }
 
   /* ── Scroll hint ── */
   .scroll-hint {
@@ -195,6 +254,19 @@
   }
   .scroll-hint svg { width: 16px; }
   @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+  /* ══════════════════════════
+     FLOATING RINGS ANIMATION
+  ══════════════════════════ */
+  .rings-anim {
+    position: relative; display: inline-block;
+    margin: 28px 0 4px;
+    animation: ringsSwing 4s ease-in-out infinite;
+  }
+  @keyframes ringsSwing {
+    0%,100% { transform: rotate(-4deg); }
+    50%      { transform: rotate(4deg); }
+  }
 
   /* ══════════════════════════
      GENERAL SECTIONS
@@ -236,7 +308,6 @@
   .couple-section {
     background: linear-gradient(180deg, var(--sky-card2) 0%, var(--sky-card) 100%);
   }
-
   .couple-cards { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
 
   .person-card {
@@ -254,10 +325,8 @@
     top: 8px; left: 8px; right: 8px; bottom: 8px;
     border: 1px solid rgba(74,138,174,0.12); pointer-events: none;
   }
-  .person-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(74,138,174,0.2);
-  }
+  .person-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(74,138,174,0.2); }
+
   .person-initial {
     width: 82px; height: 82px; border-radius: 50%;
     background: linear-gradient(135deg, rgba(74,138,174,0.12), rgba(184,214,238,0.3));
@@ -265,7 +334,14 @@
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 20px;
     font-family: 'Pinyon Script', cursive; font-size: 3rem; color: var(--blue-deep);
+    /* Flower pulse on initial */
+    animation: petalPulse 3s ease-in-out infinite;
   }
+  @keyframes petalPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(74,138,174,0.2); }
+    50%      { box-shadow: 0 0 0 10px rgba(74,138,174,0); }
+  }
+
   .person-name {
     font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400;
     color: var(--text); font-style: italic; margin-bottom: 8px;
@@ -281,7 +357,6 @@
   .photo-section {
     background: linear-gradient(160deg, var(--sky-mid) 0%, var(--sky-deep) 100%);
   }
-
   .photo-frame-outer {
     position: relative; max-width: 500px; margin: 46px auto 0;
     padding: 14px;
@@ -294,7 +369,6 @@
     content: ''; position: absolute; inset: 7px;
     border: 1px solid rgba(74,138,174,0.15); pointer-events: none; z-index: 0;
   }
-  /* Frame corner accents */
   .photo-frame-outer .fc {
     position: absolute; width: 26px; height: 26px;
     border-color: var(--blue-soft); border-style: solid; z-index: 2;
@@ -303,13 +377,12 @@
   .photo-frame-outer .fc-tr { top: 4px; right: 4px; border-width: 2px 2px 0 0; }
   .photo-frame-outer .fc-bl { bottom: 4px; left: 4px; border-width: 0 0 2px 2px; }
   .photo-frame-outer .fc-br { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; }
-
   .photo-frame-inner {
     width: 100%; aspect-ratio: 4/5; overflow: hidden;
     position: relative;
     background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 1;
+    z-index: 1;
   }
   .photo-placeholder {
     display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -319,32 +392,17 @@
   .photo-placeholder svg { width: 52px; opacity: 0.45; }
   .photo-placeholder p {
     font-size: 0.7rem; letter-spacing: 0.2em;
-    text-transform: uppercase; font-weight: 300; line-height: 2;
-    color: var(--text-dim);
+    text-transform: uppercase; font-weight: 300; line-height: 2; color: var(--text-dim);
   }
   .ph-script {
     font-family: 'Pinyon Script', cursive;
     font-size: 2.4rem; color: rgba(74,138,174,0.35);
-    letter-spacing: 0.04em;
   }
   #couplePhotoEl {
     width: 100%; height: 100%;
     object-fit: cover; display: none; position: relative; z-index: 2;
   }
-  .photo-upload-btn {
-    display: block; width: 100%; margin-top: 14px;
-    padding: 14px; border: 1px solid var(--border-hi);
-    background: rgba(255,255,255,0.4); cursor: pointer;
-    font-family: 'Raleway', sans-serif; font-weight: 300;
-    font-size: 0.68rem; letter-spacing: 0.32em;
-    text-transform: uppercase; color: var(--blue-mid);
-    transition: all 0.3s;
-  }
-  .photo-upload-btn:hover {
-    background: rgba(74,138,174,0.1);
-    border-color: var(--blue-mid);
-    color: var(--text);
-  }
+  .photo-upload-btn { display: none; }
   #photoFileInput { display: none; }
   .photo-caption {
     font-family: 'Playfair Display', serif;
@@ -358,7 +416,6 @@
   .event-section-bg {
     background: linear-gradient(180deg, var(--sky-card2) 0%, var(--sky-card) 100%);
   }
-
   .event-card {
     padding: 56px 48px;
     border: 1px solid var(--border-hi);
@@ -405,17 +462,14 @@
   .countdown-section {
     background: linear-gradient(160deg, var(--sky-deep) 0%, var(--sky-mid) 100%);
   }
-
   .countdown-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
-
   .count-block {
     min-width: 100px; padding: 28px 20px;
     border: 1px solid var(--border-hi);
     background: rgba(255,255,255,0.5);
     text-align: center; transition: all 0.3s;
     box-shadow: 0 4px 20px rgba(74,138,174,0.1);
-    backdrop-filter: blur(6px);
-    position: relative;
+    backdrop-filter: blur(6px); position: relative;
   }
   .count-block::after {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -443,7 +497,6 @@
   .message-section {
     background: linear-gradient(160deg, var(--sky-card2) 0%, var(--sky-card) 100%);
   }
-
   .quote-wrap {
     position: relative; max-width: 620px; margin: 32px auto 0;
     padding: 44px 48px;
@@ -457,12 +510,10 @@
     font-family: 'Playfair Display', serif;
     font-size: 8rem; line-height: 0.7;
     color: rgba(74,138,174,0.1);
-    position: absolute; top: 20px; left: 16px;
-    pointer-events: none;
+    position: absolute; top: 20px; left: 16px; pointer-events: none;
   }
   .quote-wrap::after {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
   }
 
@@ -476,14 +527,12 @@
     position: relative; z-index: 2;
   }
   footer::before {
-    content: '';
-    position: absolute; top: 0; left: 8%; right: 8%; height: 2px;
+    content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 2px;
     background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
   }
   .footer-names {
     font-family: 'Pinyon Script', cursive; font-size: 4rem;
-    color: var(--blue-deep);
-    letter-spacing: 0.04em; display: block; margin-bottom: 10px;
+    color: var(--blue-deep); letter-spacing: 0.04em; display: block; margin-bottom: 10px;
     text-shadow: 1px 3px 10px rgba(46,106,138,0.15);
   }
   .footer-ornament {
@@ -494,6 +543,43 @@
     font-size: 0.63rem; letter-spacing: 0.36em;
     text-transform: uppercase; color: var(--text-dim);
     margin-top: 10px; font-weight: 300;
+  }
+
+  /* ══════════════════════════
+     CSS FLOWER ANIMATIONS
+  ══════════════════════════ */
+
+  /* Spinning flower in sections */
+  .section-flower {
+    display: flex; justify-content: center; margin: 20px 0 10px;
+  }
+  .flower-spin {
+    font-size: 1.6rem;
+    animation: flowerSpin 8s linear infinite;
+    display: inline-block;
+    filter: hue-rotate(0deg);
+  }
+  @keyframes flowerSpin {
+    0%   { transform: rotate(0deg) scale(1);    filter: hue-rotate(0deg); }
+    50%  { transform: rotate(180deg) scale(1.1); filter: hue-rotate(20deg); }
+    100% { transform: rotate(360deg) scale(1);   filter: hue-rotate(0deg); }
+  }
+
+  /* Hearts that float up */
+  .hearts-container {
+    position: absolute; width: 100%; height: 100%;
+    top: 0; left: 0; pointer-events: none; overflow: hidden; z-index: 0;
+  }
+  .heart {
+    position: absolute; bottom: -40px;
+    font-size: 1rem; opacity: 0;
+    animation: heartFloat linear infinite;
+  }
+  @keyframes heartFloat {
+    0%   { transform: translateY(0) scale(0.6) rotate(-10deg); opacity: 0; }
+    10%  { opacity: 0.5; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-110%) scale(1) rotate(10deg); opacity: 0; }
   }
 
   /* ── REVEAL ── */
@@ -512,6 +598,7 @@
     .event-card { padding: 36px 22px; }
     .quote-wrap { padding: 30px 24px; }
     .photo-frame-outer { margin: 28px 8px 0; }
+    .hero-ring { display: none; }
   }
 </style>
 </head>
@@ -525,13 +612,18 @@
   </div>
 </div>
 
-<!-- PETALS -->
+<!-- PETALS CANVAS -->
 <canvas id="petals-canvas"></canvas>
 
 <!-- ════════════════════════════
      HERO
 ════════════════════════════ -->
 <section class="hero">
+
+  <!-- Pulsing rings -->
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
 
   <!-- Corner ornaments -->
   <div class="corner corner--tl">
@@ -544,6 +636,14 @@
       <path d="M124 16 L16 124" stroke="#5a9bbf" stroke-width="0.3" opacity="0.13"/>
       <circle cx="16" cy="56" r="2" fill="#5a9bbf" opacity="0.3"/>
       <circle cx="56" cy="16" r="2" fill="#5a9bbf" opacity="0.3"/>
+      <!-- Small flower at corner -->
+      <g transform="translate(40,40)" opacity="0.35">
+        <circle cx="0" cy="-6" r="3" fill="#5a9bbf"/>
+        <circle cx="6" cy="0" r="3" fill="#5a9bbf"/>
+        <circle cx="0" cy="6" r="3" fill="#5a9bbf"/>
+        <circle cx="-6" cy="0" r="3" fill="#5a9bbf"/>
+        <circle cx="0" cy="0" r="2.5" fill="#2e6a8a"/>
+      </g>
     </svg>
   </div>
   <div class="corner corner--tr">
@@ -554,6 +654,13 @@
       <path d="M16 16 L56 16 Q16 56 16 56" stroke="#5a9bbf" stroke-width="1.1" fill="none" opacity="0.45"/>
       <circle cx="16" cy="56" r="2" fill="#5a9bbf" opacity="0.3"/>
       <circle cx="56" cy="16" r="2" fill="#5a9bbf" opacity="0.3"/>
+      <g transform="translate(40,40)" opacity="0.35">
+        <circle cx="0" cy="-6" r="3" fill="#5a9bbf"/>
+        <circle cx="6" cy="0" r="3" fill="#5a9bbf"/>
+        <circle cx="0" cy="6" r="3" fill="#5a9bbf"/>
+        <circle cx="-6" cy="0" r="3" fill="#5a9bbf"/>
+        <circle cx="0" cy="0" r="2.5" fill="#2e6a8a"/>
+      </g>
     </svg>
   </div>
   <div class="corner corner--bl">
@@ -577,9 +684,9 @@
 
     <div class="divider-ornament">
       <div class="divider-line"></div>
-      <span class="div-star">❧</span>
+      <span class="div-star">🌸</span>
       <span class="div-star" style="font-size:0.75rem;">✦</span>
-      <span class="div-star">❧</span>
+      <span class="div-star">🌸</span>
       <div class="divider-line"></div>
     </div>
 
@@ -591,15 +698,34 @@
 
     <div class="divider-ornament" style="margin-top:18px;">
       <div class="divider-line"></div>
-      <span class="div-star">❧</span>
+      <span class="div-star">🌸</span>
       <span class="div-star" style="font-size:0.75rem;">✦</span>
-      <span class="div-star">❧</span>
+      <span class="div-star">🌸</span>
       <div class="divider-line"></div>
     </div>
 
     <p class="subtitle">joyfully invite you to celebrate their wedding</p>
 
-    <div class="date-badge">May 27, 2026 &nbsp;·&nbsp; Kerala, India</div>
+    <!-- Animated rings icon -->
+    <div class="rings-anim">
+      <svg width="64" height="36" viewBox="0 0 64 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="18" r="15" stroke="#4a8aae" stroke-width="2" fill="none" opacity="0.7"/>
+        <circle cx="44" cy="18" r="15" stroke="#4a8aae" stroke-width="2" fill="none" opacity="0.7"/>
+        <path d="M32 10 Q36 18 32 26" stroke="#7db5d0" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <path d="M32 10 Q28 18 32 26" stroke="#7db5d0" stroke-width="1.5" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <div class="date-badge">
+      <span class="date-day">Wednesday</span>
+      <div class="date-line">
+        <span class="date-num">27</span>
+        <span class="date-sep">✦</span>
+        <span class="date-num">May</span>
+        <span class="date-sep">✦</span>
+        <span class="date-num">2026</span>
+      </div>
+    </div>
 
     <div class="scroll-hint">
       <span>Scroll to explore</span>
@@ -614,8 +740,12 @@
 <!-- ════════════════════════════
      COUPLE
 ════════════════════════════ -->
-<section class="couple-section">
-  <div class="section-inner">
+<section class="couple-section" style="position:relative; overflow:hidden;">
+  <!-- Floating hearts -->
+  <div class="hearts-container" id="heartsContainer"></div>
+
+  <div class="section-inner" style="position:relative; z-index:2;">
+    <div class="section-flower"><span class="flower-spin">🌸</span></div>
     <span class="section-tag reveal">✦ &nbsp; The Couple &nbsp; ✦</span>
     <h2 class="section-heading reveal">Two souls, one destiny</h2>
     <p class="section-text reveal">
@@ -641,6 +771,7 @@
 ════════════════════════════ -->
 <section class="photo-section">
   <div class="section-inner">
+    <div class="section-flower"><span class="flower-spin" style="animation-delay:-2s;">🌺</span></div>
     <span class="section-tag reveal">✦ &nbsp; Our Story &nbsp; ✦</span>
     <h2 class="section-heading reveal">The Happy Couple</h2>
     <p class="section-text reveal">A picture speaks a thousand words — a moment frozen in love.</p>
@@ -651,34 +782,198 @@
       <div class="fc fc-bl"></div>
       <div class="fc fc-br"></div>
 
-      <div class="photo-frame-inner" onclick="document.getElementById('photoFileInput').click()">
-        <div class="photo-placeholder" id="photoPlaceholder">
-          <div class="ph-script">Bibin & Athira</div>
-          <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.1">
-            <rect x="3" y="10" width="46" height="36" rx="2"/>
-            <circle cx="26" cy="28" r="9"/>
-            <path d="M17 10 l3.5-7 h11 l3.5 7"/>
-            <circle cx="40" cy="18" r="2.2" fill="currentColor"/>
-          </svg>
-          <p>Click to add your<br>couple photo</p>
-        </div>
-        <img id="couplePhotoEl" alt="Bibin & Athira"/>
-      </div>
-      <button class="photo-upload-btn" onclick="document.getElementById('photoFileInput').click()">
-        ✦ &nbsp; Upload Couple Photo &nbsp; ✦
-      </button>
-      <input type="file" id="photoFileInput" accept="image/*"/>
-    </div>
+      <!-- Beautiful SVG couple illustration as dummy -->
+      <div class="photo-frame-inner" id="photoFrameInner">
 
+        <!-- Dummy illustration shown by default -->
+        <div id="dummyIllustration" style="width:100%;height:100%;position:relative;overflow:hidden;background:linear-gradient(175deg,#e8f4fc 0%,#cce4f4 50%,#b8d6ee 100%);">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;top:0;left:0;">
+            <!-- Sky & soft gradient bg -->
+            <defs>
+              <radialGradient id="bgGrad" cx="50%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#f0f8ff" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#b8d6ee" stop-opacity="0.4"/>
+              </radialGradient>
+              <radialGradient id="glowG" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#b8d6ee" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="400" height="500" fill="url(#bgGrad)"/>
+
+            <!-- Soft glow behind couple -->
+            <ellipse cx="200" cy="280" rx="130" ry="150" fill="url(#glowG)"/>
+
+            <!-- Floating flowers decoration -->
+            <!-- top left flower -->
+            <g transform="translate(40,60)" opacity="0.55">
+              <circle cx="0" cy="-10" r="7" fill="#7db5d0"/>
+              <circle cx="10" cy="0" r="7" fill="#7db5d0"/>
+              <circle cx="0" cy="10" r="7" fill="#7db5d0"/>
+              <circle cx="-10" cy="0" r="7" fill="#7db5d0"/>
+              <circle cx="7" cy="-7" r="7" fill="#a0c8e0"/>
+              <circle cx="7" cy="7" r="7" fill="#a0c8e0"/>
+              <circle cx="-7" cy="7" r="7" fill="#a0c8e0"/>
+              <circle cx="-7" cy="-7" r="7" fill="#a0c8e0"/>
+              <circle cx="0" cy="0" r="6" fill="#fff" opacity="0.9"/>
+            </g>
+            <!-- top right flower -->
+            <g transform="translate(360,50)" opacity="0.5">
+              <circle cx="0" cy="-8" r="6" fill="#5a9bbf"/>
+              <circle cx="8" cy="0" r="6" fill="#5a9bbf"/>
+              <circle cx="0" cy="8" r="6" fill="#5a9bbf"/>
+              <circle cx="-8" cy="0" r="6" fill="#5a9bbf"/>
+              <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.9"/>
+            </g>
+            <!-- bottom right flower -->
+            <g transform="translate(350,430)" opacity="0.45">
+              <circle cx="0" cy="-9" r="7" fill="#b8d6ee"/>
+              <circle cx="9" cy="0" r="7" fill="#b8d6ee"/>
+              <circle cx="0" cy="9" r="7" fill="#b8d6ee"/>
+              <circle cx="-9" cy="0" r="7" fill="#b8d6ee"/>
+              <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.85"/>
+            </g>
+            <!-- bottom left flower -->
+            <g transform="translate(55,420)" opacity="0.45">
+              <circle cx="0" cy="-8" r="6" fill="#4a8aae"/>
+              <circle cx="8" cy="0" r="6" fill="#4a8aae"/>
+              <circle cx="0" cy="8" r="6" fill="#4a8aae"/>
+              <circle cx="-8" cy="0" r="6" fill="#4a8aae"/>
+              <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.85"/>
+            </g>
+
+            <!-- Small scattered petals -->
+            <ellipse cx="100" cy="130" rx="5" ry="3" fill="#a0c8e0" opacity="0.4" transform="rotate(30,100,130)"/>
+            <ellipse cx="310" cy="160" rx="4" ry="2.5" fill="#7db5d0" opacity="0.4" transform="rotate(-20,310,160)"/>
+            <ellipse cx="80" cy="300" rx="4" ry="2.5" fill="#5a9bbf" opacity="0.3" transform="rotate(15,80,300)"/>
+            <ellipse cx="330" cy="340" rx="5" ry="3" fill="#b8d6ee" opacity="0.4" transform="rotate(-35,330,340)"/>
+            <ellipse cx="180" cy="80" rx="3.5" ry="2" fill="#4a8aae" opacity="0.35" transform="rotate(45,180,80)"/>
+            <ellipse cx="250" cy="90" rx="3" ry="2" fill="#7db5d0" opacity="0.35" transform="rotate(-15,250,90)"/>
+
+            <!-- Decorative arch above couple -->
+            <path d="M100 310 Q200 160 300 310" stroke="#7db5d0" stroke-width="1" fill="none" opacity="0.35"/>
+            <path d="M115 310 Q200 175 285 310" stroke="#a0c8e0" stroke-width="0.6" fill="none" opacity="0.25"/>
+
+            <!-- Small hearts floating -->
+            <text x="155" y="185" font-size="12" fill="#5a9bbf" opacity="0.5" text-anchor="middle">♡</text>
+            <text x="248" y="175" font-size="10" fill="#7db5d0" opacity="0.45" text-anchor="middle">♡</text>
+            <text x="200" y="162" font-size="8" fill="#4a8aae" opacity="0.4" text-anchor="middle">♡</text>
+
+            <!-- ── GROOM silhouette ── -->
+            <!-- Legs -->
+            <rect x="162" y="390" width="14" height="65" rx="7" fill="#2e6a8a" opacity="0.85"/>
+            <rect x="182" y="390" width="14" height="65" rx="7" fill="#2e6a8a" opacity="0.85"/>
+            <!-- Shoes -->
+            <ellipse cx="169" cy="454" rx="10" ry="5" fill="#1a3a4a"/>
+            <ellipse cx="189" cy="454" rx="10" ry="5" fill="#1a3a4a"/>
+            <!-- Suit body -->
+            <rect x="155" y="300" width="54" height="95" rx="12" fill="#2e6a8a" opacity="0.9"/>
+            <!-- White shirt -->
+            <rect x="174" y="302" width="15" height="60" rx="4" fill="#e8f4fc" opacity="0.85"/>
+            <!-- Bow tie -->
+            <polygon points="181,304 186,308 191,304 186,312" fill="#4a8aae" opacity="0.9"/>
+            <!-- Jacket lapels -->
+            <path d="M155,305 Q168,320 175,350" stroke="#1a3a4a" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <path d="M209,305 Q196,320 189,350" stroke="#1a3a4a" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <!-- Neck -->
+            <rect x="174" y="283" width="15" height="22" rx="7" fill="#d4b896" opacity="0.9"/>
+            <!-- Head -->
+            <ellipse cx="182" cy="268" rx="24" ry="26" fill="#d4b896"/>
+            <!-- Hair groom -->
+            <ellipse cx="182" cy="245" rx="24" ry="14" fill="#2e6a8a" opacity="0.9"/>
+            <!-- Ear -->
+            <ellipse cx="158" cy="268" rx="5" ry="7" fill="#c8a880"/>
+            <ellipse cx="206" cy="268" rx="5" ry="7" fill="#c8a880"/>
+            <!-- Eye groom -->
+            <ellipse cx="174" cy="268" rx="3.5" ry="3" fill="#1a3a4a"/>
+            <ellipse cx="190" cy="268" rx="3.5" ry="3" fill="#1a3a4a"/>
+            <circle cx="175" cy="267" r="1" fill="#fff"/>
+            <circle cx="191" cy="267" r="1" fill="#fff"/>
+            <!-- Smile groom -->
+            <path d="M174 278 Q182 284 190 278" stroke="#1a3a4a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Groom arm around bride -->
+            <path d="M209 330 Q228 315 225 360" stroke="#2e6a8a" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.85"/>
+
+            <!-- ── BRIDE silhouette ── -->
+            <!-- Dress/skirt -->
+            <path d="M215 360 Q200 460 185 500 L270 500 Q255 460 240 360 Z" fill="#cce4f4" opacity="0.85"/>
+            <!-- Dress body -->
+            <rect x="213" y="295" width="48" height="70" rx="12" fill="#ddeef8" opacity="0.9"/>
+            <!-- Dress neckline detail -->
+            <path d="M213 300 Q237 315 261 300" stroke="#b8d6ee" stroke-width="1.5" fill="none" opacity="0.7"/>
+            <!-- Veil -->
+            <path d="M237 235 Q270 260 275 340 Q260 330 248 305" fill="#e8f4fc" opacity="0.5"/>
+            <path d="M237 235 Q265 255 268 310" stroke="#b8d6ee" stroke-width="1" fill="none" opacity="0.4"/>
+            <!-- Bouquet -->
+            <circle cx="270" cy="355" r="18" fill="#b8d6ee" opacity="0.7"/>
+            <circle cx="262" cy="348" r="10" fill="#cce4f4" opacity="0.8"/>
+            <circle cx="278" cy="348" r="10" fill="#a0c8e0" opacity="0.75"/>
+            <circle cx="270" cy="342" r="10" fill="#ddeef8" opacity="0.8"/>
+            <!-- Bouquet flowers -->
+            <circle cx="270" cy="355" r="4" fill="#fff" opacity="0.9"/>
+            <circle cx="262" cy="348" r="3.5" fill="#fff" opacity="0.85"/>
+            <circle cx="278" cy="348" r="3.5" fill="#fff" opacity="0.85"/>
+            <circle cx="270" cy="342" r="3.5" fill="#fff" opacity="0.85"/>
+            <!-- Bouquet stems -->
+            <line x1="265" y1="372" x2="260" y2="395" stroke="#4a8aae" stroke-width="1.5" opacity="0.5"/>
+            <line x1="270" y1="373" x2="270" y2="398" stroke="#4a8aae" stroke-width="1.5" opacity="0.5"/>
+            <line x1="275" y1="372" x2="280" y2="395" stroke="#4a8aae" stroke-width="1.5" opacity="0.5"/>
+            <!-- Neck bride -->
+            <rect x="229" y="278" width="16" height="22" rx="7" fill="#d4b896" opacity="0.9"/>
+            <!-- Head bride -->
+            <ellipse cx="237" cy="262" rx="22" ry="24" fill="#d4b896"/>
+            <!-- Hair bride — long flowing -->
+            <ellipse cx="237" cy="243" rx="22" ry="12" fill="#4a2e00" opacity="0.7"/>
+            <path d="M215 252 Q208 290 215 340" stroke="#4a2e00" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.65"/>
+            <path d="M259 252 Q266 285 262 330" stroke="#4a2e00" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <!-- Veil clip / tiara detail -->
+            <path d="M222 244 Q237 232 252 244" stroke="#7db5d0" stroke-width="2" fill="none" opacity="0.7"/>
+            <circle cx="237" cy="237" r="3" fill="#7db5d0" opacity="0.8"/>
+            <circle cx="227" cy="242" r="2" fill="#a0c8e0" opacity="0.7"/>
+            <circle cx="247" cy="242" r="2" fill="#a0c8e0" opacity="0.7"/>
+            <!-- Ear bride -->
+            <ellipse cx="215" cy="262" rx="4.5" ry="6" fill="#c8a880"/>
+            <!-- Earring -->
+            <circle cx="215" cy="269" r="3" fill="#7db5d0" opacity="0.85"/>
+            <!-- Eye bride -->
+            <ellipse cx="229" cy="262" rx="3" ry="2.8" fill="#1a3a4a"/>
+            <ellipse cx="244" cy="262" rx="3" ry="2.8" fill="#1a3a4a"/>
+            <circle cx="230" cy="261" r="1" fill="#fff"/>
+            <circle cx="245" cy="261" r="1" fill="#fff"/>
+            <!-- Eyelash -->
+            <path d="M226 259 Q229 256 232 259" stroke="#1a3a4a" stroke-width="1" fill="none" opacity="0.7"/>
+            <path d="M241 259 Q244 256 247 259" stroke="#1a3a4a" stroke-width="1" fill="none" opacity="0.7"/>
+            <!-- Smile bride -->
+            <path d="M229 272 Q237 278 245 272" stroke="#1a3a4a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Blush -->
+            <ellipse cx="222" cy="270" rx="6" ry="3.5" fill="#ffb6c1" opacity="0.3"/>
+            <ellipse cx="252" cy="270" rx="6" ry="3.5" fill="#ffb6c1" opacity="0.3"/>
+
+            <!-- Groom blush -->
+            <ellipse cx="170" cy="274" rx="6" ry="3.5" fill="#ffb6c1" opacity="0.25"/>
+            <ellipse cx="194" cy="274" rx="6" ry="3.5" fill="#ffb6c1" opacity="0.25"/>
+
+            <!-- Ground / floor -->
+            <ellipse cx="207" cy="475" rx="80" ry="12" fill="#b8d6ee" opacity="0.35"/>
+
+            <!-- Bottom text -->
+            <text x="200" y="498" font-family="Georgia, serif" font-style="italic" font-size="11" fill="#2e6a8a" opacity="0.6" text-anchor="middle">Bibin &amp; Athira</text>
+          </svg>
+        </div>
+
+        <!-- Real photo (hidden until replaced) -->
+        <img id="couplePhotoEl" alt="Bibin & Athira" style="width:100%;height:100%;object-fit:cover;display:none;position:absolute;top:0;left:0;z-index:3;"/>
+      </div>
+    </div>
     <p class="photo-caption reveal" style="margin-top:20px;">"A love story written in the stars ✨"</p>
   </div>
 </section>
 
 <div class="orn-rule reveal">
   <div class="orn-rule-line"></div>
-  <span class="orn-rule-dot">❖</span>
-  <span class="orn-rule-dot" style="font-size:0.55rem;">✦</span>
-  <span class="orn-rule-dot">❖</span>
+  <span class="orn-rule-dot">🌸</span>
+  <span class="orn-rule-dot" style="font-size:0.55rem; color:var(--blue-soft);">✦</span>
+  <span class="orn-rule-dot">🌸</span>
   <div class="orn-rule-line"></div>
 </div>
 
@@ -687,12 +982,12 @@
 ════════════════════════════ -->
 <section class="event-section-bg">
   <div class="section-inner">
+    <div class="section-flower"><span class="flower-spin" style="animation-delay:-4s;">💐</span></div>
     <span class="section-tag reveal">✦ &nbsp; The Celebration &nbsp; ✦</span>
     <h2 class="section-heading reveal">Wedding Reception</h2>
     <p class="section-text reveal">
       We joyfully invite you to join us as we celebrate the union of Bibin and Athira. Your presence and blessings would make this evening truly memorable.
     </p>
-
     <div style="display:flex; justify-content:center; margin-top:44px;">
       <div class="event-card reveal" style="max-width:460px; width:100%;">
         <span class="event-icon">💍</span>
@@ -718,6 +1013,7 @@
 ════════════════════════════ -->
 <section class="countdown-section">
   <div class="section-inner">
+    <div class="section-flower"><span class="flower-spin" style="animation-delay:-1s; font-size:1.4rem;">⏳</span></div>
     <span class="section-tag reveal">✦ &nbsp; Counting Down &nbsp; ✦</span>
     <h2 class="section-heading reveal">Until We Say "I Do"</h2>
     <div class="countdown-row">
@@ -746,15 +1042,14 @@
 ════════════════════════════ -->
 <section class="message-section">
   <div class="section-inner">
+    <div class="section-flower"><span class="flower-spin" style="animation-delay:-3s;">🕊️</span></div>
     <span class="section-tag reveal">✦ &nbsp; A Note From Us &nbsp; ✦</span>
     <h2 class="section-heading reveal">With Love &amp; Gratitude</h2>
-
     <div class="quote-wrap reveal">
       <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; line-height:2.3; color:var(--text-soft); position:relative; z-index:1;">
         "Two hearts, one promise. We are beyond grateful to have you in our lives and would be honoured to have your blessings and presence as we begin this beautiful chapter together. Your love and support mean the world to us."
       </p>
     </div>
-
     <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin-top:34px;">
       <div style="flex:1; max-width:90px; height:1px; background:linear-gradient(90deg,transparent,var(--blue-soft));"></div>
       <span style="font-family:'Pinyon Script',cursive; font-size:2.6rem; color:var(--blue-deep); line-height:1;">Bibin &amp; Athira</span>
@@ -763,13 +1058,11 @@
   </div>
 </section>
 
-<!-- ════════════════════════════
-     FOOTER
-════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
-  <span class="footer-ornament">❖ &nbsp; ✦ &nbsp; ❖</span>
+  <span class="footer-ornament">🌸 &nbsp; ✦ &nbsp; 🌸</span>
   <span class="footer-names">Bibin &amp; Athira</span>
-  <span class="footer-ornament">❖ &nbsp; ✦ &nbsp; ❖</span>
+  <span class="footer-ornament">🌸 &nbsp; ✦ &nbsp; 🌸</span>
   <p class="footer-sub">May 27, 2026 &nbsp;✦&nbsp; Kerala, India &nbsp;✦&nbsp; #BibinWeddsAthira</p>
 </footer>
 
@@ -779,53 +1072,132 @@ window.addEventListener('load', () => {
   setTimeout(() => document.getElementById('loader').classList.add('hide'), 900);
 });
 
-// ── PETALS — soft blue & white tones ──
+// ══════════════════════════════════════
+// PETALS + FLOWERS — canvas (layer 1)
+// Draws a mix of petals, small flowers, leaves
+// ══════════════════════════════════════
 (function () {
   const canvas = document.getElementById('petals-canvas');
   const ctx = canvas.getContext('2d');
   let W, H;
-  const petals = [];
+  const particles = [];
 
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   resize(); window.addEventListener('resize', resize);
 
-  const COLORS = [
-    'rgba(184,214,238,0.55)', 'rgba(255,255,255,0.6)',
-    'rgba(140,180,210,0.45)', 'rgba(200,230,248,0.5)',
-    'rgba(160,200,230,0.4)',  'rgba(230,245,255,0.55)'
+  // Draw a 5-petal flower
+  function drawFlower(ctx, x, y, r, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 2;
+      const px = x + Math.cos(angle) * r * 1.3;
+      const py = y + Math.sin(angle) * r * 1.3;
+      ctx.beginPath();
+      ctx.ellipse(px, py, r * 0.7, r * 0.45, angle, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+    // centre
+    ctx.beginPath();
+    ctx.arc(x, y, r * 0.4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Draw a simple leaf
+  function drawLeaf(ctx, x, y, r, rot, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y); ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r * 0.4, r, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#a8d8ea';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const PETAL_COLORS = [
+    '#b8d6ee', '#cce4f4', '#ddeef8',
+    '#ffffff', '#a0c8e0', '#d0e8f8'
+  ];
+  const FLOWER_COLORS = [
+    '#b8d6ee', '#7db5d0', '#5a9bbf', '#cce4f4', '#90c4dc'
   ];
 
-  class Petal {
+  class Particle {
     constructor() { this.reset(true); }
     reset(init) {
-      this.x = Math.random() * W;
-      this.y = init ? Math.random() * H : -18;
-      this.r = 4 + Math.random() * 7;
-      this.speed = 0.28 + Math.random() * 0.55;
-      this.drift = (Math.random() - 0.5) * 0.38;
+      this.x = Math.random() * (W || 800);
+      this.y = init ? Math.random() * (H || 600) : -30;
+      this.type = Math.random() < 0.5 ? 'petal' : (Math.random() < 0.6 ? 'flower' : 'leaf');
+      this.r = this.type === 'flower' ? 5 + Math.random() * 6
+             : this.type === 'leaf'   ? 6 + Math.random() * 7
+             : 3 + Math.random() * 7;
+      this.speed = 0.25 + Math.random() * 0.55;
+      this.drift = (Math.random() - 0.5) * 0.4;
       this.rot = Math.random() * Math.PI * 2;
-      this.rotS = (Math.random() - 0.5) * 0.02;
-      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.rotS = (Math.random() - 0.5) * 0.025;
+      this.alpha = 0.25 + Math.random() * 0.4;
+      this.color = this.type === 'flower'
+        ? FLOWER_COLORS[Math.floor(Math.random() * FLOWER_COLORS.length)]
+        : PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
     }
     update() {
       this.y += this.speed; this.x += this.drift; this.rot += this.rotS;
-      if (this.y > H + 20) this.reset(false);
+      if (this.y > (H || 600) + 40) this.reset(false);
     }
     draw() {
-      ctx.save();
-      ctx.translate(this.x, this.y); ctx.rotate(this.rot);
-      ctx.fillStyle = this.color;
-      ctx.beginPath(); ctx.ellipse(0, 0, this.r, this.r * 0.55, 0, 0, Math.PI * 2);
-      ctx.fill(); ctx.restore();
+      if (this.type === 'flower') {
+        drawFlower(ctx, this.x, this.y, this.r, this.color, this.alpha);
+      } else if (this.type === 'leaf') {
+        drawLeaf(ctx, this.x, this.y, this.r, this.rot, this.alpha * 0.7);
+      } else {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.translate(this.x, this.y); ctx.rotate(this.rot);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.r, this.r * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
     }
   }
 
-  for (let i = 0; i < 65; i++) petals.push(new Petal());
+  for (let i = 0; i < 80; i++) particles.push(new Particle());
+
   (function loop() {
     ctx.clearRect(0, 0, W, H);
-    petals.forEach(p => { p.update(); p.draw(); });
+    particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(loop);
   })();
+})();
+
+// ══════════════════════════════════════
+// FLOATING HEARTS in couple section
+// ══════════════════════════════════════
+(function () {
+  const container = document.getElementById('heartsContainer');
+  const EMOJIS = ['💙','🩵','💍','🌸','✨','💫','🌺','🤍'];
+  function spawnHeart() {
+    const el = document.createElement('span');
+    el.classList.add('heart');
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    el.style.left = (5 + Math.random() * 90) + '%';
+    const dur = 5 + Math.random() * 6;
+    const delay = Math.random() * 4;
+    el.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = delay + 's';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), (dur + delay) * 1000 + 500);
+  }
+  // Spawn continuously
+  setInterval(spawnHeart, 700);
+  // Initial burst
+  for (let i = 0; i < 8; i++) spawnHeart();
 })();
 
 // ── COUNTDOWN ──
@@ -850,19 +1222,7 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ── PHOTO UPLOAD ──
-document.getElementById('photoFileInput').addEventListener('change', function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = document.getElementById('couplePhotoEl');
-    img.src = ev.target.result;
-    img.style.display = 'block';
-    document.getElementById('photoPlaceholder').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-});
+
 </script>
 </body>
 </html>
