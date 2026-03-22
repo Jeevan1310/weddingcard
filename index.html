@@ -717,9 +717,9 @@
     </div>
 
     <div class="date-badge">
-      <span class="date-day">Wednesday</span>
+      <span class="date-day">Monday</span>
       <div class="date-line">
-        <span class="date-num">27</span>
+        <span class="date-num">25</span>
         <span class="date-sep">✦</span>
         <span class="date-num">May</span>
         <span class="date-sep">✦</span>
@@ -984,7 +984,7 @@
   <div class="section-inner">
     <div class="section-flower"><span class="flower-spin" style="animation-delay:-4s;">💐</span></div>
     <span class="section-tag reveal">✦ &nbsp; The Celebration &nbsp; ✦</span>
-    <h2 class="section-heading reveal">Wedding Reception</h2>
+    <h2 class="section-heading reveal">Wedding</h2>
     <p class="section-text reveal">
       We joyfully invite you to join us as we celebrate the union of Bibin and Athira. Your presence and blessings would make this evening truly memorable.
     </p>
@@ -992,17 +992,38 @@
       <div class="event-card reveal" style="max-width:460px; width:100%;">
         <span class="event-icon">💍</span>
         <div class="event-title">You Are Cordially Invited To</div>
-        <div class="event-name">Wedding Reception</div>
+        <div class="event-name">Wedding</div>
         <div class="event-divider"></div>
         <div class="event-detail">
           <strong>Date &amp; Time</strong>
-          Wednesday, May 27, 2026<br>
+          Monday, May 25, 2026<br>
           12:00 PM onwards<br><br>
           <strong>Venue</strong>
-          The Grand Ballroom<br>
-          Le Meridien, Kochi<br>
-          Kerala, India
+          NSS Auditorium<br>
+          Pravinkoodu
         </div>
+        <!-- Google Maps Button -->
+        <a href="https://maps.app.goo.gl/C6d2FEBU9U5afJYo8" target="_blank" rel="noopener noreferrer" style="
+          display:inline-flex; align-items:center; gap:10px;
+          margin-top:28px; padding:13px 32px;
+          border:1px solid var(--border-hi);
+          background:rgba(74,138,174,0.08);
+          font-family:'Raleway',sans-serif; font-weight:300;
+          font-size:0.68rem; letter-spacing:0.3em;
+          text-transform:uppercase; color:var(--blue-deep);
+          text-decoration:none;
+          transition:all 0.3s ease;
+          position:relative; overflow:hidden;
+        "
+        onmouseover="this.style.background='rgba(74,138,174,0.18)';this.style.borderColor='var(--blue-mid)'"
+        onmouseout="this.style.background='rgba(74,138,174,0.08)';this.style.borderColor='var(--border-hi)'"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          View on Google Maps
+        </a>
       </div>
     </div>
   </div>
@@ -1050,11 +1071,6 @@
         "Two hearts, one promise. We are beyond grateful to have you in our lives and would be honoured to have your blessings and presence as we begin this beautiful chapter together. Your love and support mean the world to us."
       </p>
     </div>
-    <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin-top:34px;">
-      <div style="flex:1; max-width:90px; height:1px; background:linear-gradient(90deg,transparent,var(--blue-soft));"></div>
-      <span style="font-family:'Pinyon Script',cursive; font-size:2.6rem; color:var(--blue-deep); line-height:1;">Bibin &amp; Athira</span>
-      <div style="flex:1; max-width:90px; height:1px; background:linear-gradient(90deg,var(--blue-soft),transparent);"></div>
-    </div>
   </div>
 </section>
 
@@ -1063,7 +1079,7 @@
   <span class="footer-ornament">🌸 &nbsp; ✦ &nbsp; 🌸</span>
   <span class="footer-names">Bibin &amp; Athira</span>
   <span class="footer-ornament">🌸 &nbsp; ✦ &nbsp; 🌸</span>
-  <p class="footer-sub">May 27, 2026 &nbsp;✦&nbsp; Kerala, India &nbsp;✦&nbsp; #BibinWeddsAthira</p>
+  <p class="footer-sub">May 25, 2026 &nbsp;✦&nbsp; NSS Auditorium, Pravinkoodu &nbsp;✦&nbsp; #BibinWeddsAthira</p>
 </footer>
 
 <script>
@@ -1202,7 +1218,7 @@ window.addEventListener('load', () => {
 
 // ── COUNTDOWN ──
 function updateCountdown() {
-  const target = new Date('2026-05-27T12:00:00');
+  const target = new Date('2026-05-25T12:00:00');
   const now = new Date();
   let diff = Math.max(0, target - now);
   const days  = Math.floor(diff / 86400000); diff %= 86400000;
