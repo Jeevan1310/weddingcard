@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bibin & Athira — Wedding Invitatio</title>
+<title>Bibin & Athira — Wedding Invitation</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Pinyon+Script&family=Raleway:wght@200;300;400&family=Sacramento&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -582,6 +582,191 @@
     100% { transform: translateY(-110%) scale(1) rotate(10deg); opacity: 0; }
   }
 
+  /* ══════════════════════════
+     JOURNEY TIMELINE
+  ══════════════════════════ */
+  .journey-section {
+    background: linear-gradient(160deg, var(--sky-card2) 0%, var(--sky-mid) 100%);
+  }
+
+  /* Vertical spine */
+  .timeline-wrap {
+    position: relative;
+    max-width: 720px;
+    margin: 54px auto 0;
+    padding: 0 16px;
+  }
+  .timeline-wrap::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--blue-soft) 8%, var(--blue-soft) 92%, transparent);
+    transform: translateX(-50%);
+  }
+
+  /* Each year row */
+  .tl-item {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .tl-item:nth-child(even) { justify-content: flex-start; }
+
+  /* The year bubble on the spine */
+  .tl-year-bubble {
+    position: absolute;
+    left: 50%; top: 28px;
+    transform: translateX(-50%);
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid var(--border-hi);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Raleway', sans-serif; font-weight: 400;
+    font-size: 0.65rem; letter-spacing: 0.08em;
+    color: var(--blue-deep);
+    cursor: pointer;
+    transition: all 0.35s ease;
+    z-index: 3;
+    box-shadow: 0 4px 16px rgba(74,138,174,0.15);
+    backdrop-filter: blur(4px);
+    user-select: none;
+  }
+  .tl-year-bubble:hover,
+  .tl-year-bubble.active {
+    background: var(--blue-mid);
+    color: #fff;
+    border-color: var(--blue-mid);
+    box-shadow: 0 6px 24px rgba(74,138,174,0.35);
+    transform: translateX(-50%) scale(1.12);
+  }
+  .tl-year-bubble.active {
+    background: var(--blue-deep);
+    border-color: var(--blue-deep);
+  }
+
+  /* Card half-width sitting left or right of spine */
+  .tl-card {
+    width: calc(50% - 46px);
+    margin-bottom: 24px;
+    margin-top: 10px;
+  }
+  .tl-item:nth-child(odd)  .tl-card { margin-right: 46px; }
+  .tl-item:nth-child(even) .tl-card { margin-left: 46px; }
+
+  /* Year trigger button inside card */
+  .tl-trigger {
+    width: 100%;
+    padding: 18px 22px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 3px 14px rgba(74,138,174,0.08);
+  }
+  .tl-trigger:hover {
+    border-color: var(--border-hi);
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 6px 24px rgba(74,138,174,0.16);
+    transform: translateY(-2px);
+  }
+  .tl-item:nth-child(even) .tl-trigger { text-align: right; }
+
+  .tl-trigger::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
+  }
+
+  .tl-year-label {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.5rem; font-weight: 400;
+    color: var(--blue-deep); display: block; line-height: 1.1;
+  }
+  .tl-tagline {
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.62rem; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-top: 4px; display: block;
+  }
+  .tl-chevron {
+    font-size: 0.7rem; color: var(--blue-soft);
+    margin-top: 8px; display: block;
+    transition: transform 0.3s ease;
+  }
+  .tl-item:nth-child(even) .tl-chevron { text-align: right; }
+
+  /* Expandable panel */
+  .tl-panel {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.55s ease, opacity 0.4s ease;
+    opacity: 0;
+  }
+  .tl-panel.open {
+    max-height: 500px;
+    opacity: 1;
+  }
+  .tl-panel-inner {
+    padding: 0 0 16px;
+    border: 1px solid var(--border);
+    border-top: none;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Photo placeholder inside panel */
+  .tl-photo {
+    width: 100%; aspect-ratio: 4/3; overflow: hidden;
+    background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .tl-photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  .tl-photo-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 20px; text-align: center;
+  }
+  .tl-photo-placeholder .ph-icon { font-size: 2rem; opacity: 0.4; }
+  .tl-photo-placeholder p {
+    font-size: 0.62rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-dim);
+    font-weight: 300; line-height: 1.8;
+  }
+  .tl-photo-script {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 1.6rem; color: rgba(74,138,174,0.35);
+  }
+
+  .tl-story {
+    padding: 16px 20px 4px;
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 0.95rem; line-height: 1.9;
+    color: var(--text-soft);
+  }
+
+  /* Mobile — stack single column */
+  @media (max-width: 600px) {
+    .timeline-wrap::before { left: 22px; }
+    .tl-item,
+    .tl-item:nth-child(even) { justify-content: flex-end; }
+    .tl-year-bubble { left: 22px; top: 22px; width: 44px; height: 44px; font-size: 0.58rem; }
+    .tl-card { width: calc(100% - 58px); }
+    .tl-item:nth-child(odd)  .tl-card { margin-right: 0; }
+    .tl-item:nth-child(even) .tl-card { margin-left: 58px; }
+    .tl-item:nth-child(even) .tl-trigger { text-align: left; }
+    .tl-item:nth-child(even) .tl-chevron { text-align: left; }
+  }
+
   /* ── REVEAL ── */
   .reveal {
     opacity: 0; transform: translateY(26px);
@@ -997,7 +1182,7 @@
         <div class="event-detail">
           <strong>Date &amp; Time</strong>
           Monday, May 25, 2026<br>
-          12:00 PM onwards<br><br>
+          11:30 AM onwards<br><br>
           <strong>Venue</strong>
           NSS Auditorium<br>
           Pravinkoodu
@@ -1055,6 +1240,238 @@
         <span class="count-label">Seconds</span>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════
+     JOURNEY TIMELINE
+════════════════════════════ -->
+<section class="journey-section">
+  <div class="section-inner">
+    <div class="section-flower"><span class="flower-spin" style="animation-delay:-1.5s;">💙</span></div>
+    <span class="section-tag reveal">✦ &nbsp; Our Journey &nbsp; ✦</span>
+    <h2 class="section-heading reveal">A Love Story Through the Years</h2>
+    <p class="section-text reveal">Tap each year to relive the beautiful chapters of our story.</p>
+
+    <div class="timeline-wrap reveal">
+
+      <!-- 2018 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2018',this)">2018</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2018',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2018</span>
+            <span class="tl-tagline">Where it all began</span>
+            <span class="tl-chevron" id="chev-2018">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2018">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2018</div>
+                  <div class="ph-icon">🌸</div>
+                  <p>Add your photo<br>from 2018</p>
+                </div>
+              </div>
+              <p class="tl-story">"Every great love story has a beginning — this was ours. The year two hearts first found each other."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2019 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2019',this)">2019</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2019',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2019</span>
+            <span class="tl-tagline">Growing closer</span>
+            <span class="tl-chevron" id="chev-2019">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2019">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2019</div>
+                  <div class="ph-icon">💫</div>
+                  <p>Add your photo<br>from 2019</p>
+                </div>
+              </div>
+              <p class="tl-story">"With every passing moment we grew closer, discovering in each other a home we never knew we needed."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2020 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2020',this)">2020</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2020',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2020</span>
+            <span class="tl-tagline">Love through the storm</span>
+            <span class="tl-chevron" id="chev-2020">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2020">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2020</div>
+                  <div class="ph-icon">🤍</div>
+                  <p>Add your photo<br>from 2020</p>
+                </div>
+              </div>
+              <p class="tl-story">"The world paused, but our love never did. Distance and uncertainty only made our bond stronger."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2021 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2021',this)">2021</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2021',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2021</span>
+            <span class="tl-tagline">Brighter days together</span>
+            <span class="tl-chevron" id="chev-2021">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2021">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2021</div>
+                  <div class="ph-icon">☀️</div>
+                  <p>Add your photo<br>from 2021</p>
+                </div>
+              </div>
+              <p class="tl-story">"After the rain comes the sunshine. We stepped into brighter days, hand in hand, ready for everything ahead."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2022 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2022',this)">2022</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2022',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2022</span>
+            <span class="tl-tagline">Adventures & memories</span>
+            <span class="tl-chevron" id="chev-2022">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2022">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2022</div>
+                  <div class="ph-icon">🌍</div>
+                  <p>Add your photo<br>from 2022</p>
+                </div>
+              </div>
+              <p class="tl-story">"Every adventure was sweeter with you by my side. New places, new memories, all woven into our story."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2023 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2023',this)">2023</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2023',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2023</span>
+            <span class="tl-tagline">The question was asked</span>
+            <span class="tl-chevron" id="chev-2023">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2023">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2023</div>
+                  <div class="ph-icon">💍</div>
+                  <p>Add your photo<br>from 2023</p>
+                </div>
+              </div>
+              <p class="tl-story">"Four little words, a lifetime of promise. She said yes, and the world became more beautiful in an instant."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2024 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2024',this)">2024</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2024',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2024</span>
+            <span class="tl-tagline">Dreaming together</span>
+            <span class="tl-chevron" id="chev-2024">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2024">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2024</div>
+                  <div class="ph-icon">✨</div>
+                  <p>Add your photo<br>from 2024</p>
+                </div>
+              </div>
+              <p class="tl-story">"Planning a forever together is a beautiful kind of joy. Every detail of our big day designed with love."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2025 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2025',this)">2025</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2025',this.closest('.tl-item').querySelector('.tl-year-bubble'))">
+            <span class="tl-year-label">2025</span>
+            <span class="tl-tagline">Almost forever</span>
+            <span class="tl-chevron" id="chev-2025">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2025">
+            <div class="tl-panel-inner">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2025</div>
+                  <div class="ph-icon">🌺</div>
+                  <p>Add your photo<br>from 2025</p>
+                </div>
+              </div>
+              <p class="tl-story">"The countdown to forever has begun. Every sunrise brings us one day closer to the most beautiful chapter."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2026 -->
+      <div class="tl-item">
+        <div class="tl-year-bubble" onclick="toggleYear('2026',this)" style="background:var(--blue-deep);color:#fff;border-color:var(--blue-deep);">2026</div>
+        <div class="tl-card">
+          <div class="tl-trigger" onclick="toggleYear('2026',this.closest('.tl-item').querySelector('.tl-year-bubble'))" style="background:rgba(46,106,138,0.1); border-color:var(--border-hi);">
+            <span class="tl-year-label" style="color:var(--blue-deep);">2026 ✦</span>
+            <span class="tl-tagline" style="color:var(--blue-mid);">The wedding day</span>
+            <span class="tl-chevron" id="chev-2026">▼</span>
+          </div>
+          <div class="tl-panel" id="panel-2026">
+            <div class="tl-panel-inner" style="background:rgba(46,106,138,0.07);">
+              <div class="tl-photo">
+                <div class="tl-photo-placeholder">
+                  <div class="tl-photo-script">2026</div>
+                  <div class="ph-icon">🎊</div>
+                  <p>The big day photo<br>coming soon!</p>
+                </div>
+              </div>
+              <p class="tl-story">"And so the greatest chapter begins. On May 25, 2026, two hearts become one, forever and always."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end timeline-wrap -->
   </div>
 </section>
 
@@ -1216,9 +1633,32 @@ window.addEventListener('load', () => {
   for (let i = 0; i < 8; i++) spawnHeart();
 })();
 
-// ── COUNTDOWN ──
+// ── TIMELINE TOGGLE ──
+function toggleYear(year, bubbleEl) {
+  const panel  = document.getElementById('panel-' + year);
+  const chev   = document.getElementById('chev-' + year);
+  const isOpen = panel.classList.contains('open');
+
+  // Close all open panels first
+  document.querySelectorAll('.tl-panel.open').forEach(p => {
+    p.classList.remove('open');
+    const y = p.id.replace('panel-', '');
+    const c = document.getElementById('chev-' + y);
+    if (c) c.textContent = '▼';
+  });
+  document.querySelectorAll('.tl-year-bubble.active').forEach(b => b.classList.remove('active'));
+
+  // If it wasn't open, open it
+  if (!isOpen) {
+    panel.classList.add('open');
+    chev.textContent = '▲';
+    if (bubbleEl) bubbleEl.classList.add('active');
+    // Smooth scroll into view
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+  }
+}
 function updateCountdown() {
-  const target = new Date('2026-05-25T12:00:00');
+  const target = new Date('2026-05-25T11:30:00');
   const now = new Date();
   let diff = Math.max(0, target - now);
   const days  = Math.floor(diff / 86400000); diff %= 86400000;
