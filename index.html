@@ -727,10 +727,166 @@
     background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
     display: flex; align-items: center; justify-content: center;
     position: relative;
+    cursor: zoom-in;
   }
   .tl-photo img {
     width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform 0.4s ease;
+  }
+  .tl-photo:hover img { transform: scale(1.04); }
+
+  /* Zoom hint badge */
+  .tl-photo::after {
+    content: '⊕';
+    position: absolute; bottom: 10px; right: 10px;
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.75);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--blue-deep);
+    opacity: 0; transition: opacity 0.3s ease;
+    pointer-events: none;
+    line-height: 28px; text-align: center;
+  }
+  .tl-photo:hover::after { opacity: 1; }
+
+  /* ── LIGHTBOX ── */
+  #tl-lightbox {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(10, 25, 40, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    backdrop-filter: blur(8px);
+    padding: 20px;
+  }
+  #tl-lightbox.open {
+    opacity: 1; visibility: visible;
+  }
+  .lb-inner {
+    position: relative;
+    max-width: 92vw; max-height: 90vh;
+    display: flex; flex-direction: column; align-items: center;
+    animation: lbPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes lbPop {
+    from { transform: scale(0.82); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+  .lb-frame {
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    position: relative;
+  }
+  /* four corner brackets */
+  .lb-frame::before, .lb-frame::after {
+    content: ''; position: absolute;
+    width: 22px; height: 22px;
+    border-color: rgba(125,181,208,0.7); border-style: solid;
+    z-index: 2; pointer-events: none;
+  }
+  .lb-frame::before { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+  .lb-frame::after  { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+  .lb-frame-br, .lb-frame-tr {
+    position: absolute; width: 22px; height: 22px;
+    border-color: rgba(125,181,208,0.7); border-style: solid;
+    z-index: 2; pointer-events: none;
+  }
+  .lb-frame-tr { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
+  .lb-frame-br { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
+
+  #tl-lightbox img {
     display: block;
+    max-width: 88vw; max-height: 72vh;
+    object-fit: contain;
+    border: none;
+  }
+  .lb-placeholder {
+    width: min(70vw, 420px); height: min(55vh, 360px);
+    background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px;
+  }
+  .lb-ph-script {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 3rem; color: rgba(125,181,208,0.5);
+  }
+  .lb-ph-icon { font-size: 2.4rem; opacity: 0.45; }
+  .lb-ph-text {
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.65rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: rgba(180,210,230,0.7);
+  }
+
+  .lb-caption {
+    margin-top: 16px; text-align: center;
+    max-width: min(88vw, 520px);
+  }
+  .lb-year-label {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.5rem; color: rgba(200,230,248,0.9);
+  }
+  .lb-story {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 0.88rem; line-height: 1.9;
+    color: rgba(160,200,228,0.75); margin-top: 6px;
+  }
+
+  /* Close button */
+  .lb-close {
+    position: absolute; top: -16px; right: -16px;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+    z-index: 3;
+    backdrop-filter: blur(4px);
+  }
+  .lb-close:hover {
+    background: rgba(74,138,174,0.5);
+    border-color: var(--blue-soft);
+    transform: scale(1.1) rotate(90deg);
+  }
+
+  /* Prev / Next arrows */
+  .lb-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(4px);
+    user-select: none;
+  }
+  .lb-arrow:hover {
+    background: rgba(74,138,174,0.4);
+    border-color: var(--blue-soft);
+  }
+  .lb-prev { left: -56px; }
+  .lb-next { right: -56px; }
+  @media (max-width: 600px) {
+    .lb-prev { left: 6px; top: auto; bottom: -56px; transform: none; }
+    .lb-next { right: 6px; top: auto; bottom: -56px; transform: none; }
+    .lb-close { top: -14px; right: -6px; }
+  }
+
+  /* Dot indicators */
+  .lb-dots {
+    display: flex; gap: 8px; justify-content: center; margin-top: 14px;
+  }
+  .lb-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(125,181,208,0.35);
+    transition: all 0.25s ease; cursor: pointer;
+  }
+  .lb-dot.active {
+    background: var(--blue-soft);
+    transform: scale(1.3);
   }
   .tl-photo-placeholder {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -765,6 +921,318 @@
     .tl-item:nth-child(even) .tl-card { margin-left: 58px; }
     .tl-item:nth-child(even) .tl-trigger { text-align: left; }
     .tl-item:nth-child(even) .tl-chevron { text-align: left; }
+  }
+
+  /* ══════════════════════════
+     LIGHTBOX
+  ══════════════════════════ */
+  .lightbox-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(10, 25, 40, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    backdrop-filter: blur(6px);
+    padding: 20px;
+  }
+  .lightbox-overlay.active {
+    opacity: 1; visibility: visible;
+  }
+  .lightbox-box {
+    position: relative;
+    max-width: 92vw; max-height: 90vh;
+    display: flex; flex-direction: column; align-items: center;
+    transform: scale(0.88);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .lightbox-overlay.active .lightbox-box {
+    transform: scale(1);
+  }
+  .lightbox-img-wrap {
+    position: relative;
+    border: 1px solid rgba(125,181,208,0.35);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
+  }
+  .lightbox-img-wrap img {
+    display: block;
+    max-width: 88vw;
+    max-height: 72vh;
+    width: auto; height: auto;
+    object-fit: contain;
+  }
+  /* Placeholder shown when no real image */
+  .lightbox-placeholder {
+    width: min(400px, 80vw);
+    height: min(320px, 60vh);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px; padding: 30px;
+    text-align: center;
+  }
+  .lightbox-placeholder .lbp-script {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 3rem; color: rgba(125,181,208,0.6);
+  }
+  .lightbox-placeholder .lbp-icon { font-size: 2.8rem; opacity: 0.4; }
+  .lightbox-placeholder p {
+    font-size: 0.68rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(125,181,208,0.7);
+    font-weight: 300; line-height: 2;
+  }
+  /* Caption bar */
+  .lightbox-caption {
+    margin-top: 16px;
+    text-align: center;
+  }
+  .lightbox-caption .lb-year {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.6rem; color: rgba(200,230,248,0.9);
+    display: block; line-height: 1.1;
+  }
+  .lightbox-caption .lb-tag {
+    font-family: 'Raleway', sans-serif; font-weight: 200;
+    font-size: 0.6rem; letter-spacing: 0.34em;
+    text-transform: uppercase; color: rgba(125,181,208,0.65);
+    margin-top: 5px; display: block;
+  }
+  /* Close button */
+  .lightbox-close {
+    position: absolute; top: -18px; right: -18px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(46,106,138,0.85);
+    border: 1px solid rgba(125,181,208,0.5);
+    color: #e8f4fc; font-size: 1rem; line-height: 1;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+  .lightbox-close:hover {
+    background: var(--blue-deep);
+    transform: scale(1.1) rotate(90deg);
+  }
+  /* Hint on tl-photo that it's tappable */
+  .tl-photo {
+    width: 100%; aspect-ratio: 4/3; overflow: hidden;
+    background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; cursor: pointer;
+  }
+  .tl-photo::after {
+    content: '⤢';
+    position: absolute; bottom: 8px; right: 10px;
+    font-size: 1rem; color: rgba(74,138,174,0.55);
+    background: rgba(255,255,255,0.5);
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .tl-photo:hover::after { opacity: 0.9; }
+  .tl-photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+
+  /* ══════════════════════════
+     PHOTO LIGHTBOX
+  ══════════════════════════ */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(10, 25, 40, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    backdrop-filter: blur(8px);
+    padding: 24px;
+    cursor: zoom-out;
+  }
+  #lightbox.open {
+    opacity: 1; visibility: visible;
+  }
+  #lightbox-img-wrap {
+    position: relative;
+    max-width: 92vw; max-height: 88vh;
+    transform: scale(0.88);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(125,181,208,0.35);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(125,181,208,0.1);
+  }
+  #lightbox.open #lightbox-img-wrap {
+    transform: scale(1);
+  }
+  #lightbox-img {
+    display: block;
+    max-width: 92vw; max-height: 82vh;
+    object-fit: contain;
+  }
+
+  /* Lightbox placeholder (when no real image yet) */
+  #lightbox-placeholder {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px; padding: 60px 50px;
+    background: linear-gradient(160deg, var(--sky-card) 0%, var(--sky-deep) 100%);
+    min-width: 300px; max-width: 500px; text-align: center;
+  }
+  #lightbox-placeholder .lb-script {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 3rem; color: var(--blue-deep); line-height: 1;
+  }
+  #lightbox-placeholder .lb-year {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.5rem; color: var(--text); font-weight: 400;
+  }
+  #lightbox-placeholder .lb-hint {
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.65rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--text-dim); line-height: 2;
+  }
+  #lightbox-placeholder .lb-icon { font-size: 2.5rem; }
+
+  /* Caption bar */
+  #lightbox-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 14px 20px;
+    background: linear-gradient(0deg, rgba(10,25,40,0.85) 0%, transparent 100%);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #lightbox-caption-text {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 0.95rem; color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em;
+  }
+  #lightbox-year-tag {
+    font-family: 'Raleway', sans-serif; font-weight: 200;
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--blue-soft);
+  }
+
+  /* Close button */
+  #lightbox-close {
+    position: absolute; top: -18px; right: -18px;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--blue-deep);
+    border: 1px solid rgba(125,181,208,0.4);
+    color: #fff; font-size: 1.1rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  #lightbox-close:hover {
+    background: var(--blue-mid);
+    transform: scale(1.12) rotate(90deg);
+  }
+
+  /* Hint badge on photos */
+  .tl-photo { cursor: zoom-in; position: relative; }
+  .tl-photo-zoom-hint {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(46,106,138,0.75);
+    color: #fff; font-size: 0.55rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 10px;
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+  .tl-photo:hover .tl-photo-zoom-hint { opacity: 1; }
+
+  /* ══════════════════════════
+     COUNTDOWN SURPRISE
+  ══════════════════════════ */
+  #surprise-overlay {
+    position: fixed; inset: 0; z-index: 99998;
+    background: linear-gradient(160deg, rgba(184,214,238,0.97) 0%, rgba(204,228,244,0.98) 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+    text-align: center; padding: 30px;
+    overflow: hidden;
+  }
+  #surprise-overlay.show {
+    opacity: 1; visibility: visible;
+  }
+  #surprise-canvas {
+    position: absolute; inset: 0;
+    pointer-events: none; z-index: 0;
+  }
+  .surprise-inner {
+    position: relative; z-index: 2;
+    animation: surprisePop 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes surprisePop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  .surprise-top {
+    font-size: 3.5rem; line-height: 1;
+    animation: spin 4s linear infinite;
+    display: inline-block; margin-bottom: 10px;
+  }
+  .surprise-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(3rem, 10vw, 6rem);
+    color: var(--blue-deep);
+    text-shadow: 2px 4px 16px rgba(46,106,138,0.25);
+    line-height: 1.1; display: block; margin-bottom: 8px;
+  }
+  .surprise-sub {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: var(--text-soft); margin-bottom: 6px;
+  }
+  .surprise-date {
+    font-family: 'Sacramento', cursive;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    color: var(--blue-mid); margin: 10px 0 20px;
+    letter-spacing: 0.04em;
+  }
+  .surprise-divider {
+    display: flex; align-items: center; gap: 14px;
+    justify-content: center; margin: 14px 0;
+  }
+  .surprise-divider-line {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
+  }
+  .surprise-msg {
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.75rem; letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+  .surprise-close {
+    padding: 14px 44px;
+    border: 1px solid var(--border-hi);
+    background: rgba(255,255,255,0.6);
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    font-size: 0.7rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--blue-deep);
+    cursor: pointer; backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+  }
+  .surprise-close:hover {
+    background: var(--blue-mid); color: #fff;
+    border-color: var(--blue-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(74,138,174,0.3);
+  }
+  .surprise-rings {
+    margin: 16px 0 8px;
+    animation: ringsSwing 3s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes ringsSwing {
+    0%,100% { transform: rotate(-6deg); }
+    50%      { transform: rotate(6deg); }
   }
 
   /* ── REVEAL ── */
@@ -940,12 +1408,12 @@
       <div class="person-card reveal reveal-delay-1">
         <div class="person-initial">B</div>
         <div class="person-name">Bibin Thomas</div>
-        <div class="person-sub">Son of Thomas &amp; Family</div>
+        <div class="person-sub">Son of George Antony &amp; Asha George</div>
       </div>
       <div class="person-card reveal reveal-delay-2">
         <div class="person-initial">A</div>
         <div class="person-name">Athira Hari</div>
-        <div class="person-sub">Daughter of Hari &amp; Family</div>
+        <div class="person-sub">Daughter of Harikumar M S &amp; Pushpakumari L</div>
       </div>
     </div>
   </div>
@@ -1499,6 +1967,30 @@
   <p class="footer-sub">May 25, 2026 &nbsp;✦&nbsp; NSS Auditorium, Pravinkoodu &nbsp;✦&nbsp; #BibinWeddsAthira</p>
 </footer>
 
+<!-- ── LIGHTBOX ── -->
+<div id="tl-lightbox" onclick="lbClickOutside(event)">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-arrow lb-prev" onclick="lbNav(-1)">‹</button>
+    <button class="lb-arrow lb-next" onclick="lbNav(1)">›</button>
+    <div class="lb-frame" id="lb-frame">
+      <div class="lb-frame-tr"></div>
+      <div class="lb-frame-br"></div>
+      <img id="lb-img" src="" alt="" style="display:none;"/>
+      <div class="lb-placeholder" id="lb-placeholder">
+        <div class="lb-ph-script" id="lb-ph-year"></div>
+        <div class="lb-ph-icon" id="lb-ph-icon"></div>
+        <div class="lb-ph-text">Photo Coming Soon</div>
+      </div>
+    </div>
+    <div class="lb-caption">
+      <div class="lb-year-label" id="lb-year-label"></div>
+      <div class="lb-story" id="lb-story"></div>
+    </div>
+    <div class="lb-dots" id="lb-dots"></div>
+  </div>
+</div>
+
 <script>
 // ── LOADER ──
 window.addEventListener('load', () => {
@@ -1657,6 +2149,164 @@ function toggleYear(year, bubbleEl) {
     setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
   }
 }
+
+// ── LIGHTBOX ──
+// Year data for captions
+const tlYearData = {
+  '2018': { caption: 'Where it all began…',            tagline: 'The First Chapter' },
+  '2019': { caption: 'Growing closer every day.',      tagline: 'Growing Together' },
+  '2020': { caption: 'Love through every storm.',      tagline: 'Unbreakable Bond' },
+  '2021': { caption: 'Brighter days, hand in hand.',   tagline: 'Sunshine Returns' },
+  '2022': { caption: 'Adventures & golden memories.',  tagline: 'Our Adventures' },
+  '2023': { caption: '"She said yes." ✨',              tagline: 'The Proposal' },
+  '2024': { caption: 'Dreaming our forever together.', tagline: 'Forever Planning' },
+  '2025': { caption: 'Almost there, my love.',         tagline: 'Almost Forever' },
+  '2026': { caption: 'And so begins forever — May 25, 2026.', tagline: 'The Wedding Day 💍' },
+};
+
+function openLightbox(year, imgSrc) {
+  const lb       = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lightbox-img');
+  const lbPH     = document.getElementById('lightbox-placeholder');
+  const lbCap    = document.getElementById('lightbox-caption-text');
+  const lbTag    = document.getElementById('lightbox-year-tag');
+  const lbTitle  = document.getElementById('lightbox-year-title');
+  const data     = tlYearData[year] || { caption: '', tagline: year };
+
+  if (imgSrc) {
+    lbImg.src = imgSrc;
+    lbImg.style.display = 'block';
+    lbPH.style.display  = 'none';
+  } else {
+    lbImg.style.display = 'none';
+    lbPH.style.display  = 'flex';
+    lbTitle.textContent = year;
+  }
+
+  lbCap.textContent = data.caption;
+  lbTag.textContent = data.tagline;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Wire up tl-photo divs after DOM is ready
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tl-photo').forEach(photoDiv => {
+    // Add zoom hint badge
+    const hint = document.createElement('span');
+    hint.className = 'tl-photo-zoom-hint';
+    hint.textContent = '⊕ tap to enlarge';
+    photoDiv.appendChild(hint);
+
+    // Find year from parent panel id
+    photoDiv.addEventListener('click', () => {
+      const panel = photoDiv.closest('.tl-panel');
+      const year  = panel ? panel.id.replace('panel-', '') : '';
+      const img   = photoDiv.querySelector('img');
+      const imgSrc = (img && img.src && !img.src.endsWith('/')) ? img.src : null;
+      openLightbox(year, imgSrc);
+    });
+  });
+});
+
+// ══════════════════════════════════════
+// LIGHTBOX — photo zoom viewer
+// ══════════════════════════════════════
+const LB_DATA = [
+  { year: '2018', tagline: 'Where it all began',      icon: '🌸', story: '"Every great love story has a beginning — this was ours. The year two hearts first found each other."' },
+  { year: '2019', tagline: 'Growing closer',          icon: '💫', story: '"With every passing moment we grew closer, discovering in each other a home we never knew we needed."' },
+  { year: '2020', tagline: 'Love through the storm',  icon: '🤍', story: '"The world paused, but our love never did. Distance and uncertainty only made our bond stronger."' },
+  { year: '2021', tagline: 'Brighter days together',  icon: '☀️', story: '"After the rain comes the sunshine. We stepped into brighter days, hand in hand, ready for everything."' },
+  { year: '2022', tagline: 'Adventures & memories',   icon: '🌍', story: '"Every adventure was sweeter with you by my side. New places, new memories, all woven into our story."' },
+  { year: '2023', tagline: 'The question was asked',  icon: '💍', story: '"Four little words, a lifetime of promise. She said yes, and the world became more beautiful in an instant."' },
+  { year: '2024', tagline: 'Dreaming together',       icon: '✨', story: '"Planning a forever together is a beautiful kind of joy. Every detail designed with love."' },
+  { year: '2025', tagline: 'Almost forever',          icon: '🌺', story: '"The countdown to forever has begun. Every sunrise brings us one day closer to the most beautiful chapter."' },
+  { year: '2026', tagline: 'The wedding day',         icon: '🎊', story: '"And so the greatest chapter begins. On May 25, 2026, two hearts become one, forever and always."' },
+];
+
+let lbIndex = 0;
+
+function openLightbox(year) {
+  lbIndex = LB_DATA.findIndex(d => d.year === year);
+  if (lbIndex < 0) lbIndex = 0;
+  renderLightbox();
+  document.getElementById('tl-lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Build dots
+  const dotsEl = document.getElementById('lb-dots');
+  dotsEl.innerHTML = LB_DATA.map((d, i) =>
+    `<div class="lb-dot ${i === lbIndex ? 'active' : ''}" onclick="lbGoTo(${i})"></div>`
+  ).join('');
+}
+
+function renderLightbox() {
+  const d = LB_DATA[lbIndex];
+  const img = document.getElementById('lb-img');
+  const ph  = document.getElementById('lb-placeholder');
+
+  // Try to find an actual image in the panel
+  const panel = document.getElementById('panel-' + d.year);
+  const panelImg = panel ? panel.querySelector('.tl-photo img') : null;
+  const hasSrc = panelImg && panelImg.src && !panelImg.src.endsWith('#') && panelImg.complete;
+
+  if (hasSrc) {
+    img.src = panelImg.src;
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+  } else {
+    img.style.display = 'none';
+    ph.style.display  = 'flex';
+    document.getElementById('lb-ph-year').textContent = d.year;
+    document.getElementById('lb-ph-icon').textContent = d.icon;
+  }
+
+  document.getElementById('lb-year-label').textContent = d.year + ' — ' + d.tagline;
+  document.getElementById('lb-story').textContent = d.story;
+
+  // Update dots
+  document.querySelectorAll('.lb-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === lbIndex);
+  });
+}
+
+function closeLightbox() {
+  document.getElementById('tl-lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + LB_DATA.length) % LB_DATA.length;
+  renderLightbox();
+}
+
+function lbGoTo(i) {
+  lbIndex = i;
+  renderLightbox();
+}
+
+function lbClickOutside(e) {
+  if (e.target === document.getElementById('tl-lightbox')) closeLightbox();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('tl-lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') lbNav(1);
+  if (e.key === 'ArrowLeft')  lbNav(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+// ── COUNTDOWN + SURPRISE TRIGGER ──
+let surpriseFired = false;
 function updateCountdown() {
   const target = new Date('2026-05-25T11:30:00');
   const now = new Date();
@@ -1669,8 +2319,114 @@ function updateCountdown() {
   document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
   document.getElementById('cd-mins').textContent  = String(mins).padStart(2, '0');
   document.getElementById('cd-secs').textContent  = String(secs).padStart(2, '0');
+
+  // 🎊 Fire surprise when all hit zero!
+  if (days === 0 && hours === 0 && mins === 0 && secs === 0 && !surpriseFired) {
+    surpriseFired = true;
+    setTimeout(launchSurprise, 1000);
+  }
 }
 updateCountdown(); setInterval(updateCountdown, 1000);
+
+// ── SURPRISE LAUNCH ──
+function launchSurprise() {
+  document.getElementById('surprise-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  startConfetti();
+}
+function closeSurprise() {
+  document.getElementById('surprise-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  stopConfetti();
+}
+
+// ── CONFETTI CANNON ──
+let confettiAnim   = null;
+let confettiActive = false;
+
+function startConfetti() {
+  const canvas = document.getElementById('surprise-canvas');
+  const ctx    = canvas.getContext('2d');
+  confettiActive = true;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = [
+    '#5a9bbf','#7db5d0','#b8d6ee','#cce4f4',
+    '#ffffff','#a0c8e0','#2e6a8a','#90c4dc',
+    '#f0c96a','#ffb6c1','#e8f4fc','#4a8aae'
+  ];
+  const SHAPES = ['rect','circle','ribbon'];
+
+  class Confetto {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x      = Math.random() * (canvas.width  || 400);
+      this.y      = init ? (Math.random() * (canvas.height || 600)) - canvas.height : -30;
+      this.w      = 6 + Math.random() * 9;
+      this.h      = this.w * (0.3 + Math.random() * 0.5);
+      this.color  = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.shape  = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+      this.speed  = 1.5 + Math.random() * 3;
+      this.drift  = (Math.random() - 0.5) * 1.5;
+      this.rot    = Math.random() * Math.PI * 2;
+      this.rotS   = (Math.random() - 0.5) * 0.12;
+      this.alpha  = 0.7 + Math.random() * 0.3;
+      this.wobble = Math.random() * Math.PI * 2;
+      this.wobbleS= 0.05 + Math.random() * 0.08;
+    }
+    update() {
+      this.y      += this.speed;
+      this.wobble += this.wobbleS;
+      this.x      += this.drift + Math.sin(this.wobble) * 0.8;
+      this.rot    += this.rotS;
+      if (this.y > (canvas.height || 600) + 40) this.reset(false);
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.fillStyle = this.color;
+      if (this.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (this.shape === 'ribbon') {
+        ctx.beginPath();
+        ctx.moveTo(-this.w, 0);
+        ctx.quadraticCurveTo(0, -this.h * 2, this.w, 0);
+        ctx.quadraticCurveTo(0,  this.h * 2, -this.w, 0);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+      }
+      ctx.restore();
+    }
+  }
+
+  const pieces = [];
+  for (let i = 0; i < 180; i++) pieces.push(new Confetto());
+
+  (function loop() {
+    if (!confettiActive) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => { p.update(); p.draw(); });
+    confettiAnim = requestAnimationFrame(loop);
+  })();
+}
+
+function stopConfetti() {
+  confettiActive = false;
+  if (confettiAnim) cancelAnimationFrame(confettiAnim);
+  const c = document.getElementById('surprise-canvas');
+  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+}
 
 // ── SCROLL REVEAL ──
 const observer = new IntersectionObserver(entries => {
@@ -1680,5 +2436,76 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 
 </script>
+<!-- ════════════════════════════
+     LIGHTBOX
+════════════════════════════ -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox(event)">
+  <div class="lightbox-box" id="lightboxBox">
+    <button class="lightbox-close" onclick="closeLightbox(null)">✕</button>
+    <div class="lightbox-img-wrap" id="lightboxImgWrap">
+      <!-- content injected by JS -->
+    </div>
+    <div class="lightbox-caption">
+      <span class="lb-year" id="lbYear"></span>
+      <span class="lb-tag"  id="lbTag"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     COUNTDOWN SURPRISE OVERLAY
+════════════════════════════ -->
+<div id="surprise-overlay">
+  <canvas id="surprise-canvas"></canvas>
+  <div class="surprise-inner">
+    <div class="surprise-top">🎊</div>
+    <span class="surprise-title">Bibin & Athira</span>
+    <p class="surprise-sub">Today is the day!</p>
+    <div class="surprise-rings">
+      <svg width="80" height="44" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="22" r="18" stroke="#4a8aae" stroke-width="2.5" fill="none" opacity="0.8"/>
+        <circle cx="54" cy="22" r="18" stroke="#4a8aae" stroke-width="2.5" fill="none" opacity="0.8"/>
+        <path d="M40 12 Q45 22 40 32" stroke="#7db5d0" stroke-width="2" fill="none" opacity="0.7"/>
+        <path d="M40 12 Q35 22 40 32" stroke="#7db5d0" stroke-width="2" fill="none" opacity="0.7"/>
+      </svg>
+    </div>
+    <span class="surprise-date">Monday, May 25, 2026</span>
+    <div class="surprise-divider">
+      <div class="surprise-divider-line"></div>
+      <span style="color:var(--blue-soft); font-size:0.9rem;">🌸</span>
+      <span style="color:var(--blue-soft); font-size:0.7rem;">✦</span>
+      <span style="color:var(--blue-soft); font-size:0.9rem;">🌸</span>
+      <div class="surprise-divider-line"></div>
+    </div>
+    <p class="surprise-msg">✦ &nbsp; The wait is over &nbsp; · &nbsp; NSS Auditorium, Pravinkoodu &nbsp; ✦</p>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:var(--text-soft); max-width:380px; line-height:1.9; margin-bottom:28px;">
+      "Two hearts. One promise. Forever begins today."
+    </p>
+    <button class="surprise-close" onclick="closeSurprise()">✦ &nbsp; Celebrate With Us &nbsp; ✦</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     LIGHTBOX OVERLAY
+════════════════════════════ -->
+<div id="lightbox" onclick="closeLightbox()">
+  <div id="lightbox-img-wrap" onclick="event.stopPropagation()">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <!-- Real image (shown if photo exists) -->
+    <img id="lightbox-img" src="" alt="" style="display:none;"/>
+    <!-- Placeholder (shown if no photo yet) -->
+    <div id="lightbox-placeholder">
+      <div class="lb-icon">🌸</div>
+      <div class="lb-script">Bibin & Athira</div>
+      <div class="lb-year" id="lightbox-year-title"></div>
+      <p class="lb-hint">Photo coming soon<br>for this beautiful year</p>
+    </div>
+    <div id="lightbox-caption">
+      <span id="lightbox-caption-text"></span>
+      <span id="lightbox-year-tag"></span>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
